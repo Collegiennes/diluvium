@@ -1,5 +1,3 @@
-Name,Parent,Summons.psd,Spells.psd,ATK,HPS,SPD,INT,0
-Crocodile ,Alligator ,,,,,,,0
 Eland ,Antelope,,,,,,,0
 Gazelle ,Antelope,,,,,,,0
 Kudu ,Antelope,,,,,,,0
@@ -87,10 +85,12 @@ Seal ,Otter,,,,,,,0
 Sealion,Otter,,,,,,,0
 Gaur ,Ox,,,,,,,0
 Kouprey ,Ox,,,,,,,0
+Name,Parent,Summons.psd,Spells.psd,ATK,HPS,SPD,INT,0
 Hare ,Rabbit,,,,,,,0
 Shrew ,Rat,,,,,,,0
 Cobra ,Snake,,,,,,,0
 Tortoise,Turtle,,,,,,,0
+Crocodile ,,72,,6,4,4,3,17
 Anteater ,,1,,2,3,2,3,10
 Antelope ,,2,,2,2,5,2,11
 Ape ,,3,,4,3,3,5,15
@@ -104,13 +104,14 @@ Bird,,10,,3,1,4,4,12
 Bison ,,11,,5,4,2,2,13
 Boar ,,12,,4,4,4,3,15
 Camel ,,13,,2,3,3,2,10
-Capybara,,14,,2,2,3,3,10
+Capybara,,14,,2,2,3,3,
 Caribou ,,15,,4,4,3,2,13
 Cat ,,16,,1,1,4,4,10
 Chameleon,,17,,1,1,2,2,6
 Chicken ,,18,,1,2,2,1,6
 Chinchilla ,,19,,1,1,3,3,8
 Crab ,,20,,4,1,2,1,8
+Cow,,71,,1,6,2,2,
 Crow ,,21,,4,2,4,4,14
 Deer ,,22,,4,2,4,3,13
 Dog ,,23,,2,2,3,4,11
@@ -141,6 +142,7 @@ Octopus ,,47,,5,3,4,4,16
 Ostrich ,,48,,2,2,2,2,8
 Otter ,,49,,2,3,3,3,11
 Owl ,,50,,4,3,4,4,15
+Ox,,70,,,,,,
 Parrot ,,51,,2,2,4,5,13
 Pig,,52,,2,3,1,2,8
 Platypus ,,53,,2,2,3,2,9
@@ -159,7 +161,7 @@ Turtle ,,65,,4,3,1,3,11
 Walrus ,,66,,3,4,2,3,12
 Wolf ,,67,,4,3,4,4,15
 Zebra ,,68,,2,2,4,2,10
-,,,,,,,,0
+,,69,,,,,,0
 ,,,,,,,,0
 ,,,,,,,,0
 ,,,,,,,,0
