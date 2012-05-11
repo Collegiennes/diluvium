@@ -1,3 +1,8 @@
 
 /Temp
 /Library
+*.csproj
+/_ReSharper.diluvium-csharp
+*.sln
+*.suo
+/diluvium-csharp.5.1.ReSharper.user
