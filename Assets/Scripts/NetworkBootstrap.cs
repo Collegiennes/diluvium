@@ -27,7 +27,7 @@ public class NetworkBootstrap : MonoBehaviour
         else
         {
             PeerType = NetworkPeerType.Disconnected;
-            errorMessage = "IP address invalid";
+            errorMessage = "IP address invalid : " + IP;
         }
     }
 
