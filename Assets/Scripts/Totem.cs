@@ -8,6 +8,9 @@ public class Totem : MonoBehaviour
 {
     public const float TransitionDuration = 0.1f;
 
+    public delegate void MyTurnHandler(Totem t);
+    public event MyTurnHandler MyTurn;
+
     List<string> SubObjectsNames = new List<string> { "LowAnimal", "MidAnimal", "HighAnimal" };
 
     readonly List<GameObject> AnimalObjects = new List<GameObject>(3);
@@ -77,29 +80,8 @@ public class Totem : MonoBehaviour
         if (doMove)
         {
             moveTimeBuffer = 0;
-
-            // TODO : AI
-
-            // debug -- random direction that doesn't go out of the terrain
-            Vector3 direction = Vector3.zero;
-            var valid = false;
-            foreach (var d in new [] { Vector3.right, Vector3.left, Vector3.forward, Vector3.back }.OrderBy(elem => Guid.NewGuid()))
-            {
-                var x = (int) Math.Floor(transform.position.x + d.x);
-                var z = (int) Math.Floor(transform.position.z + d.z);
-
-                valid |= x >= 0 && x < TerrainGrid.Instance.sizeX &&
-                         z >= 0 && z < TerrainGrid.Instance.sizeZ;
-
-                if (valid)
-                {
-                    direction = d;
-                    break;
-                }
-            }
-
-            if (valid)
-                networkView.RPC("MoveTo", RPCMode.All, direction);
+            if(MyTurn != null)
+                MyTurn(this);
         }
 
         // TODO : If near enemy and wants to attack
