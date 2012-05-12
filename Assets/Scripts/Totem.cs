@@ -6,7 +6,10 @@ using Random = UnityEngine.Random;
 
 public class Totem : MonoBehaviour
 {
-    public const float TransitionDuration = 0.1f;
+    public const float TransitionDuration = 0.15f;
+
+    public AnimationCurve JumpHeightCurve;
+    public AnimationCurve JumpTimeCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
     List<string> SubObjectsNames = new List<string> { "LowAnimal", "MidAnimal", "HighAnimal" };
 
@@ -106,7 +109,8 @@ public class Totem : MonoBehaviour
                 var z = (int) Math.Floor(transform.position.z + d.z);
 
                 valid |= x >= 0 && x < TerrainGrid.Instance.sizeX &&
-                         z >= 0 && z < TerrainGrid.Instance.sizeZ;
+                         z >= 0 && z < TerrainGrid.Instance.sizeZ &&
+                         Math.Abs(transform.position.y - TerrainGrid.Instance.Height[x, z]) < 2.5f;
 
                 if (valid)
                 {
@@ -168,9 +172,16 @@ public class Totem : MonoBehaviour
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
             var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
-            var easedStep = Easing.EaseIn(step, EasingType.Quadratic);
 
-            transform.position = Vector3.Lerp(origin, destination, easedStep);
+            var xzStep = JumpTimeCurve.Evaluate(step);
+
+            // parabola : f(x) = -((x-0.5)^2)*4+1
+            //var height = (float)((-Math.Pow(xzStep - 0.5, 2) * 4 + 1) * JumpHeight) + (targetHeight - origin.y) * xzStep;
+
+            var height = JumpHeightCurve.Evaluate(xzStep) + (targetHeight - origin.y) * xzStep;
+
+            transform.position = new Vector3(Mathf.Lerp(origin.x, destination.x, xzStep), height + origin.y,
+                                             Mathf.Lerp(origin.z, destination.z, xzStep));
 
             return step >= 1;
         });
