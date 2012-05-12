@@ -3,10 +3,12 @@ using System.Collections;
 
 public class Incantation : MonoBehaviour
 {
+    public Color errorTint = Color.red;
+    public Color successTint = Color.white;
     public GUIStyle containerStyle;
     public GUIStyle textStyle;
 
-    string text = "kitty hedgehog  pony";
+    string text = "";
 
 	void Start ()
     {
@@ -33,7 +35,10 @@ public class Incantation : MonoBehaviour
             string word = words[i];
 
             if(AnimalDatabase.Get(word) == null)
-                GUI.color = Color.red;
+                GUI.color = errorTint;
+            else
+                GUI.color = successTint;
+
             GUILayout.Label(word, textStyle);
             GUI.color = Color.white;
 
@@ -52,6 +57,17 @@ public class Incantation : MonoBehaviour
         {
             if(char.IsLetter(e.character) || e.character == ' ')
                 text += e.character;
+            else if(e.character == '\n')
+            {
+                foreach(string word in words)
+                {
+                    if(AnimalDatabase.Get(word) != null)
+                    {
+                        print("awesoem word: " + word);
+                    }
+                }
+                text = "";
+            }
             else if(e.keyCode == KeyCode.Backspace && text.Length > 0)
             {
                 text = text.Remove(text.Length-1);
