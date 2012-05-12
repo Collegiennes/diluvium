@@ -1,5 +1,6 @@
+Name,Parent,Summons.psd,Spells.psd,ATK,HPS,SPD,INT,0
 Eland ,Antelope,,,,,,,0
-Gazelle ,Antelope,,,,,,,0
+Gazelle ,Antelope,,,,,,,
 Kudu ,Antelope,,,,,,,0
 Oryx ,Antelope,,,,,,,0
 Baboon ,Ape,,,,,,,0
@@ -85,7 +86,6 @@ Seal ,Otter,,,,,,,0
 Sealion,Otter,,,,,,,0
 Gaur ,Ox,,,,,,,0
 Kouprey ,Ox,,,,,,,0
-Name,Parent,Summons.psd,Spells.psd,ATK,HPS,SPD,INT,0
 Hare ,Rabbit,,,,,,,0
 Shrew ,Rat,,,,,,,0
 Cobra ,Snake,,,,,,,0
@@ -142,7 +142,7 @@ Octopus ,,47,,5,3,4,4,16
 Ostrich ,,48,,2,2,2,2,8
 Otter ,,49,,2,3,3,3,11
 Owl ,,50,,4,3,4,4,15
-Ox,,70,,,,,,
+Ox,,70,,3,5,2,2,
 Parrot ,,51,,2,2,4,5,13
 Pig,,52,,2,3,1,2,8
 Platypus ,,53,,2,2,3,2,9
