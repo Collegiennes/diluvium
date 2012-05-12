@@ -6,8 +6,9 @@ using Random = UnityEngine.Random;
 
 public class Totem : MonoBehaviour
 {
-    public const float TransitionDuration = 0.15f;
+    public const float MaxJumpHeight = 2.5f;
 
+    public const float TransitionDuration = 0.15f;
     public AnimationCurve JumpHeightCurve;
     public AnimationCurve JumpTimeCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
@@ -29,14 +30,12 @@ public class Totem : MonoBehaviour
             foreach (var r in gameObject.FindChild(n).GetComponentsInChildren<Renderer>())
                 r.enabled = false;
 
-        // Schedule time events
         if (Network.isServer)
             TimeKeeper.Instance.Beat += OnBeat;
 
-        var x = (int) Math.Floor(transform.position.x);
-        var z = (int) Math.Floor(transform.position.z);
-
-        transform.position = new Vector3(x + 0.5f, TerrainGrid.Instance.Height[x, z], z + 0.5f);
+        transform.position = new Vector3(transform.position.x, 
+                                         TerrainGrid.GetHeightAt(transform.position),
+                                         transform.position.z);
     }
 
     public bool IsEnemy(Totem other)
@@ -48,6 +47,8 @@ public class Totem : MonoBehaviour
     public void SetOwner(NetworkPlayer owner)
     {
         Owner = owner;
+        if (Network.isServer)
+            TerrainGrid.RegisterTotem(owner, this);
     }
 
     [RPC]
@@ -82,6 +83,8 @@ public class Totem : MonoBehaviour
     void OnDestroy()
     {
         TimeKeeper.Instance.Beat -= OnBeat;
+        if (Network.isServer)
+            TerrainGrid.UnregisterTotem(Owner, this);
     }
 
     void OnBeat()
@@ -109,8 +112,7 @@ public class Totem : MonoBehaviour
                 var z = (int) Math.Floor(transform.position.z + d.z);
 
                 valid |= x >= 0 && x < TerrainGrid.Instance.sizeX &&
-                         z >= 0 && z < TerrainGrid.Instance.sizeZ &&
-                         Math.Abs(transform.position.y - TerrainGrid.Instance.Height[x, z]) < 2.5f;
+                         z >= 0 && z < TerrainGrid.Instance.sizeZ;
 
                 if (valid)
                 {
@@ -162,22 +164,21 @@ public class Totem : MonoBehaviour
         if (x >= 0 && x < TerrainGrid.Instance.sizeX &&
             z >= 0 && z < TerrainGrid.Instance.sizeZ)
         {
-            targetHeight = TerrainGrid.Instance.Height[x, z];
+            targetHeight = TerrainGrid.GetHeightAt(x, z);
         }
         else
             throw new InvalidOperationException("Trying to move out of the terrain grid");
 
         var destination = new Vector3(x + 0.5f, targetHeight, z + 0.5f);
 
+        if (Network.isServer)
+            TerrainGrid.MoveTotem(Owner, origin, destination);
+
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
             var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
 
             var xzStep = JumpTimeCurve.Evaluate(step);
-
-            // parabola : f(x) = -((x-0.5)^2)*4+1
-            //var height = (float)((-Math.Pow(xzStep - 0.5, 2) * 4 + 1) * JumpHeight) + (targetHeight - origin.y) * xzStep;
-
             var height = JumpHeightCurve.Evaluate(xzStep) + (targetHeight - origin.y) * xzStep;
 
             transform.position = new Vector3(Mathf.Lerp(origin.x, destination.x, xzStep), height + origin.y,
