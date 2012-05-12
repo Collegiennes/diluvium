@@ -18,7 +18,7 @@ public class Totem : MonoBehaviour
     // server-side
     int movementAverageSpeed;
     int moveTimeBuffer;
-    List<int> attackTimeBuffers = new List<int>(3);
+    List<int> attackTimeBuffers = new List<int>(3);   
 
     void Start()
     {

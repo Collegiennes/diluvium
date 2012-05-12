@@ -55,8 +55,13 @@ public class Incantation : MonoBehaviour
             {
                 var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToArray();
 
-                if (Network.isServer)   ServerSpawnPoint.SpawnTotem(validWords);
-                else                    ClientSpawnPoint.SpawnTotem(validWords);
+                if (validWords.Length > 0)
+                {
+                    if (Network.isServer)
+                        ServerSpawnPoint.SpawnTotemOnServer(validWords);
+                    else
+                        ClientSpawnPoint.SpawnTotemOnServer(validWords);
+                }
 
                 //foreach(string word in words)
                 //{
