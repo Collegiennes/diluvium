@@ -16,12 +16,12 @@ public class Totem : MonoBehaviour
     readonly List<GameObject> AnimalObjects = new List<GameObject>(3);
     readonly List<AnimalData> AnimalData = new List<AnimalData>(3);
 
-    public NetworkPlayer Owner;
+    NetworkPlayer Owner;
 
     // server-side
     int movementAverageSpeed;
     int moveTimeBuffer;
-    List<int> attackTimeBuffers = new List<int>(3);   
+    readonly List<int> attackTimeBuffers = new List<int>(3);   
 
     void Start()
     {
@@ -37,9 +37,17 @@ public class Totem : MonoBehaviour
         var z = (int) Math.Floor(transform.position.z);
 
         transform.position = new Vector3(x + 0.5f, TerrainGrid.Instance.Height[x, z], z + 0.5f);
+    }
 
-        if (networkView.isMine)
-            Owner = Network.player;
+    public bool IsEnemy(Totem other)
+    {
+        return other.Owner != Owner;
+    }
+
+    [RPC]
+    public void SetOwner(NetworkPlayer owner)
+    {
+        Owner = owner;
     }
 
     [RPC]
@@ -99,7 +107,7 @@ public class Totem : MonoBehaviour
         //        OnAttackBeat(i, isTriplet);
     }
 
-    void OnAttackBeat(int animalId, bool isTriplet)
+    void OnAttackBeat(int animalId)
     {
         bool doAttack = false;
         var data = AnimalData[animalId];
