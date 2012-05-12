@@ -1,33 +1,18 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
 public class AnimalDatabase : MonoBehaviour
 {
-    public class AnimalData
-    {
-        public string name;
-        public string parentName;
-        public int spriteIndex;
-        public int effectIndex;
-        public int attack;
-        public int health;
-        public int speed;
-        public int intelligence;
-    }
-
     public TextAsset animalCsv;
 
     public Dictionary<string, AnimalData> Animals { get; private set; }
 
-    public AnimalDatabase Instance { get; private set; }
+    public static AnimalDatabase Instance { get; private set; }
 
     void Awake()
     {
         Instance = this;
-    }
-
-	void Start()
-    {
         Animals = new Dictionary<string, AnimalData>();
 
 	    string[] data = animalCsv.text.Split('\n');
@@ -114,4 +99,17 @@ public class AnimalDatabase : MonoBehaviour
         Assert.Condition(stat >= -1, "stat out of range");
         return stat;
     }
+}
+
+[Serializable]
+public class AnimalData
+{
+    public string name;
+    public string parentName;
+    public int spriteIndex;
+    public int effectIndex;
+    public int attack;
+    public int health;
+    public int speed;
+    public int intelligence;
 }
