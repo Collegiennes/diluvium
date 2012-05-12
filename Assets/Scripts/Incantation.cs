@@ -8,7 +8,9 @@ public class Incantation : MonoBehaviour
     public Color successTint = Color.white;
     public GUIStyle containerStyle;
     public GUIStyle textStyle;
-    public SpawnPoint SpawnPoint;
+
+    public SpawnPoint ServerSpawnPoint;
+    public SpawnPoint ClientSpawnPoint;
 
     string text = "";
 
@@ -47,11 +49,14 @@ public class Incantation : MonoBehaviour
         Event e = Event.current;
         if(e.type == EventType.KeyDown)
         {
-            if(char.IsLetter(e.character) || e.character == ' ')
+            if(char.IsLetter(e.character) || (e.character == ' ' && words.Length < 3))
                 text += e.character;
             else if(e.character == '\n')
             {
-                SpawnPoint.SpawnTotem(words.Where(x => AnimalDatabase.Get(x) != null).ToArray());
+                var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToArray();
+
+                if (Network.isServer)   ServerSpawnPoint.SpawnTotem(validWords);
+                else                    ClientSpawnPoint.SpawnTotem(validWords);
 
                 //foreach(string word in words)
                 //{

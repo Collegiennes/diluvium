@@ -13,9 +13,12 @@ public class Totem : MonoBehaviour
     readonly List<GameObject> AnimalObjects = new List<GameObject>(3);
     readonly List<AnimalData> AnimalData = new List<AnimalData>(3);
 
+    public NetworkPlayer Owner;
+
     // server-side
     int movementAverageSpeed;
-    int moveTimeBuffer, attackTimeBuffer;
+    int moveTimeBuffer;
+    List<int> attackTimeBuffers = new List<int>(3);
 
     void Start()
     {
@@ -31,6 +34,9 @@ public class Totem : MonoBehaviour
         var z = (int) Math.Floor(transform.position.z);
 
         transform.position = new Vector3(x + 0.5f, TerrainGrid.Instance.Height[x, z], z + 0.5f);
+
+        if (networkView.isMine)
+            Owner = Network.player;
     }
 
     [RPC]
@@ -57,6 +63,9 @@ public class Totem : MonoBehaviour
 
         // TODO : floor?
         movementAverageSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
+
+        if (Network.isServer)
+            attackTimeBuffers.Add(0);
     }
 
     void OnDestroy()
@@ -113,15 +122,15 @@ public class Totem : MonoBehaviour
         bool doAttack = false;
         var data = AnimalData[animalId];
 
-        attackTimeBuffer++;
-        if (attackTimeBuffer == 4 && data.speed == 1)       doAttack = true;
-        else if (attackTimeBuffer == 3 && data.speed == 2)  doAttack = true;
-        else if (attackTimeBuffer == 2 && data.speed == 3)  doAttack = true;
-        else if (attackTimeBuffer == 1 && data.speed == 4)  doAttack = true;
+        attackTimeBuffers[animalId]++;
+        if (attackTimeBuffers[animalId] == 4 && data.speed == 1) doAttack = true;
+        else if (attackTimeBuffers[animalId] == 3 && data.speed == 2) doAttack = true;
+        else if (attackTimeBuffers[animalId] == 2 && data.speed == 3) doAttack = true;
+        else if (attackTimeBuffers[animalId] == 1 && data.speed == 4) doAttack = true;
 
         if (doAttack)
         {
-            attackTimeBuffer = 0;
+            attackTimeBuffers[animalId] = 0;
 
             // TODO : grab the enemy's view ID
             NetworkViewID enemyId = default(NetworkViewID);
