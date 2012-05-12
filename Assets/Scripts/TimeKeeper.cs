@@ -5,7 +5,7 @@ class TimeKeeper : MonoBehaviour
 {
     public static TimeKeeper Instance { get; private set; }
 
-    public event Action<bool> Beat;
+    public event Action Beat;
 
     public int BeatsPerMinute = 60;
 
@@ -55,23 +55,13 @@ class TimeKeeper : MonoBehaviour
         bar = bar - (int)bar;
 
         if (lastBeat > 0.75 && bar < 0.25)
-            if (Beat != null)
-            {
-                Beat(true); 
-                Beat(false);
-            }
-
+            if (Beat != null) Beat();
         if (lastBeat < 0.25 && bar > 0.25)
-            if (Beat != null) Beat(false);
+            if (Beat != null) Beat();
         if (lastBeat < 0.5 && bar > 0.5)
-            if (Beat != null) Beat(false);
+            if (Beat != null) Beat();
         if (lastBeat < 0.75 && bar > 0.75)
-            if (Beat != null) Beat(false);
-
-        if (lastBeat < 1 / 3.0 && bar > 1 / 3.0)
-            if (Beat != null) Beat(true);
-        if (lastBeat < 2 / 3.0 && bar > 2 / 3.0)
-            if (Beat != null) Beat(true);
+            if (Beat != null) Beat();
 
         lastBeat = bar;
     }

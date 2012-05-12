@@ -26,6 +26,11 @@ public class Totem : MonoBehaviour
         // Schedule time events
         if (Network.isServer)
             TimeKeeper.Instance.Beat += OnBeat;
+
+        var x = (int) Math.Floor(transform.position.x);
+        var z = (int) Math.Floor(transform.position.z);
+
+        transform.position = new Vector3(x + 0.5f, TerrainGrid.Instance.Height[x, z], z + 0.5f);
     }
 
     [RPC]
@@ -54,41 +59,47 @@ public class Totem : MonoBehaviour
         movementAverageSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
     }
 
-    void Destroy()
+    void OnDestroy()
     {
         TimeKeeper.Instance.Beat -= OnBeat;
     }
 
-    void OnBeat(bool isTriplet)
+    void OnBeat()
     {
         bool doMove = false;
 
-        if (isTriplet)
-        {
-            // triplets (every triplet beat)
-            if (movementAverageSpeed == 3) doMove = true;
-        }
-        else
-        {
-            // quarter notes (every non-triplet beat)
-            if (movementAverageSpeed == 4) doMove = true;
-
-            if (movementAverageSpeed == 2 || movementAverageSpeed == 1)
-            {
-                moveTimeBuffer++;
-                // half notes (every two non-triplet beats)
-                if (moveTimeBuffer == 2 && movementAverageSpeed == 2)      doMove = true;
-                // whole notes (every four non-triplet beats)
-                else if (moveTimeBuffer == 4 && movementAverageSpeed == 1) doMove = true;
-            }
-        }
+        moveTimeBuffer++;
+        if (moveTimeBuffer == 4 && movementAverageSpeed == 1)       doMove = true;
+        else if (moveTimeBuffer == 3 && movementAverageSpeed == 2)  doMove = true;
+        else if (moveTimeBuffer == 2 && movementAverageSpeed == 3)  doMove = true;
+        else if (moveTimeBuffer == 1 && movementAverageSpeed == 4)  doMove = true;
 
         if (doMove)
         {
             moveTimeBuffer = 0;
 
             // TODO : AI
-            networkView.RPC("MoveTo", RPCMode.All, Vector3.right);
+
+            // debug -- random direction that doesn't go out of the terrain
+            Vector3 direction = Vector3.zero;
+            var valid = false;
+            foreach (var d in new [] { Vector3.right, Vector3.left, Vector3.forward, Vector3.back }.OrderBy(elem => Guid.NewGuid()))
+            {
+                var x = (int) Math.Floor(transform.position.x + d.x);
+                var z = (int) Math.Floor(transform.position.z + d.z);
+
+                valid |= x >= 0 && x < TerrainGrid.Instance.sizeX &&
+                         z >= 0 && z < TerrainGrid.Instance.sizeZ;
+
+                if (valid)
+                {
+                    direction = d;
+                    break;
+                }
+            }
+
+            if (valid)
+                networkView.RPC("MoveTo", RPCMode.All, direction);
         }
 
         // TODO : If near enemy and wants to attack
@@ -102,23 +113,11 @@ public class Totem : MonoBehaviour
         bool doAttack = false;
         var data = AnimalData[animalId];
 
-        if (isTriplet)
-        {
-            if (data.speed == 3) doAttack = true;
-        }
-        else
-        {
-            if (data.speed == 4) doAttack = true;
-
-            if (data.speed == 2 || data.speed == 1)
-            {
-                attackTimeBuffer++;
-                // half notes (every two non-triplet beats)
-                if (attackTimeBuffer == 2 && data.speed == 2)       doAttack = true;
-                // whole notes (every four non-triplet beats)
-                else if (attackTimeBuffer == 4 && data.speed == 1)  doAttack = true;
-            }
-        }
+        attackTimeBuffer++;
+        if (attackTimeBuffer == 4 && data.speed == 1)       doAttack = true;
+        else if (attackTimeBuffer == 3 && data.speed == 2)  doAttack = true;
+        else if (attackTimeBuffer == 2 && data.speed == 3)  doAttack = true;
+        else if (attackTimeBuffer == 1 && data.speed == 4)  doAttack = true;
 
         if (doAttack)
         {
@@ -134,14 +133,27 @@ public class Totem : MonoBehaviour
     public void MoveTo(Vector3 direction)
     {
         var origin = transform.position;
-        //var targetHeight = 
+
+        var x = (int)Math.Floor(transform.position.x + direction.x);
+        var z = (int)Math.Floor(transform.position.z + direction.z);
+        float targetHeight;
+
+        if (x >= 0 && x < TerrainGrid.Instance.sizeX &&
+            z >= 0 && z < TerrainGrid.Instance.sizeZ)
+        {
+            targetHeight = TerrainGrid.Instance.Height[x, z];
+        }
+        else
+            throw new InvalidOperationException("Trying to move out of the terrain grid");
+
+        var destination = new Vector3(x + 0.5f, targetHeight, z + 0.5f);
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
             var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
             var easedStep = Easing.EaseIn(step, EasingType.Quadratic);
 
-            transform.position = origin + direction * easedStep;
+            transform.position = Vector3.Lerp(origin, destination, easedStep);
 
             return step >= 1;
         });

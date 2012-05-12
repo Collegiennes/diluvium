@@ -6,12 +6,18 @@ public class TerrainGrid : MonoBehaviour
     public int sizeX = 8;
     public int sizeZ = 16;
 
+    public static TerrainGrid Instance { get; private set; }
 
-    float [,] height;
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    public float[,] Height { get; private set; }
 
     void Start()
     {
-        height = new float[sizeX, sizeZ];
+        Height = new float[sizeX, sizeZ];
 
         for(int i = 0; i < sizeX; i++) for(int j = 0; j < sizeZ; j++)
         {
@@ -21,11 +27,11 @@ public class TerrainGrid : MonoBehaviour
                 transform.TransformPoint(new Vector3(i+0.5f, 100, j+0.5f)),
                 -Vector3.up, out hit, Mathf.Infinity))
             {
-                height[i, j] = transform.InverseTransformPoint(hit.point).y;
+                Height[i, j] = transform.InverseTransformPoint(hit.point).y;
             }
             else
             {
-                height[i, j] = 100;
+                Height[i, j] = 100;
             }
                     
         }
@@ -35,7 +41,7 @@ public class TerrainGrid : MonoBehaviour
     {
         for(int i = 0; i < sizeX; i++) for(int j = 0; j < sizeZ; j++)
         {
-            float h = height == null ? 0 : height[i, j] + 0.01f;
+            float h = Height == null ? 0 : Height[i, j] + 0.01f;
             Gizmos.DrawLine(transform.TransformPoint(new Vector3(i,   h, j  )),
                             transform.TransformPoint(new Vector3(i+1, h, j  )));
             Gizmos.DrawLine(transform.TransformPoint(new Vector3(i,   h, j+1)),
