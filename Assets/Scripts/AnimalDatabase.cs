@@ -4,11 +4,23 @@ using System.Collections.Generic;
 
 public class AnimalDatabase : MonoBehaviour
 {
+    //// static ///////////////////////////////////////////////////////////////
+
+    public static AnimalDatabase Instance { get; private set; }
+
+    public static AnimalData Get(string name)
+    {
+        name = name.ToLower();
+        if(Instance.Animals.ContainsKey(name))
+            return Instance.Animals[name];
+        else
+            return null;
+    }
+
+    //// instance /////////////////////////////////////////////////////////////
     public TextAsset animalCsv;
 
     public Dictionary<string, AnimalData> Animals { get; private set; }
-
-    public static AnimalDatabase Instance { get; private set; }
 
     void Awake()
     {
@@ -21,7 +33,7 @@ public class AnimalDatabase : MonoBehaviour
             string[] rowData = data[i].Split(',');
 
             AnimalData animal = new AnimalData();
-            animal.name = rowData[0].Trim();
+            animal.name = rowData[0].Trim().ToLower();
             if(animal.name.Length != 0)
             {
                 try
@@ -53,9 +65,9 @@ public class AnimalDatabase : MonoBehaviour
             {
                 if(animal.parentName != null)
                 {
-                    Assert.Condition(Animals.ContainsKey(animal.parentName),
+                    AnimalData parent = Assert.NonNull(
+                        Get(animal.parentName),
                         "missing parent");
-                    AnimalData parent = Animals[animal.parentName];
 
                     if(animal.spriteIndex < 0)
                         animal.spriteIndex = parent.spriteIndex;

@@ -31,9 +31,14 @@ public class Incantation : MonoBehaviour
         for(int i = 0; i < words.Length; i++)
         {
             string word = words[i];
+
+            if(AnimalDatabase.Get(word) == null)
+                GUI.color = Color.red;
             GUILayout.Label(word, textStyle);
+            GUI.color = Color.white;
+
             if(i < words.Length-1)
-                GUILayout.Space(10);
+                GUILayout.Space(12);
             else
                 GUILayout.Label("_", textStyle);
         }
