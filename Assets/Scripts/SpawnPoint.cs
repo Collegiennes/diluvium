@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-class SpawnPoint : MonoBehaviour
+public class SpawnPoint : MonoBehaviour
 {
     public Totem TotemPrefab;
 
@@ -9,6 +9,9 @@ class SpawnPoint : MonoBehaviour
     {
         if (!Network.isServer) 
             throw new InvalidOperationException("Only server can network-instantiate units");
+
+        foreach (var n in names)
+            Debug.Log(n);
 
         var totemGo = Network.Instantiate(TotemPrefab, transform.position, Quaternion.identity, 0) as Totem;
         foreach (var animalName in names)

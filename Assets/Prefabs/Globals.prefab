@@ -11,6 +11,7 @@ GameObject:
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400004}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400006}
   m_Layer: 0
   m_Name: Globals
   m_TagString: Untagged
@@ -40,8 +41,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2fd930333056c447b097186f1093ec6, type: 1}
   m_Name: 
-  errorTint: {r: 1, g: 0, b: 0, a: 1}
-  successTint: {r: 1, g: 1, b: 1, a: 1}
   containerStyle:
     m_Name: 
     m_Normal:
@@ -183,6 +182,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe2684b953c88184dbf6f4d223ca615d, type: 1}
   m_Name: 
   animalCsv: {fileID: 4900000, guid: b83011a53cf3f4346ad0ee037008ab01, type: 1}
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f18a8b6c0334e1441a3244a5635826b7, type: 1}
+  m_Name: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

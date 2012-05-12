@@ -20,7 +20,7 @@ public class AnimalDatabase : MonoBehaviour
     //// instance /////////////////////////////////////////////////////////////
     public TextAsset animalCsv;
 
-    public Dictionary<string, AnimalData> Animals { get; private set; }
+    Dictionary<string, AnimalData> Animals;
 
     void Awake()
     {

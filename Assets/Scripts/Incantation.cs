@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using System.Collections;
 
@@ -7,18 +8,9 @@ public class Incantation : MonoBehaviour
     public Color successTint = Color.white;
     public GUIStyle containerStyle;
     public GUIStyle textStyle;
+    public SpawnPoint SpawnPoint;
 
     string text = "";
-
-	void Start ()
-    {
-	
-	}
-	
-	void Update ()
-    {
-        
-	}
 
     void OnGUI ()
     {
@@ -59,13 +51,15 @@ public class Incantation : MonoBehaviour
                 text += e.character;
             else if(e.character == '\n')
             {
-                foreach(string word in words)
-                {
-                    if(AnimalDatabase.Get(word) != null)
-                    {
-                        print("awesoem word: " + word);
-                    }
-                }
+                SpawnPoint.SpawnTotem(words.Where(x => AnimalDatabase.Get(x) != null).ToArray());
+
+                //foreach(string word in words)
+                //{
+                //    if(AnimalDatabase.Get(word) != null)
+                //    {
+                //        print("awesoem word: " + word);
+                //    }
+                //}
                 text = "";
             }
             else if(e.keyCode == KeyCode.Backspace && text.Length > 0)

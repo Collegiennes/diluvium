@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-class Totem : MonoBehaviour
+public class Totem : MonoBehaviour
 {
     public const float TransitionDuration = 0.1f;
 
@@ -34,18 +34,20 @@ class Totem : MonoBehaviour
         var animalObject = gameObject.FindChild(SubObjectsNames[0]);
         AnimalObjects.Add(animalObject);
 
-        var animalData = AnimalDatabase.Instance.Animals[animalName];
+        var animalData = AnimalDatabase.Get(animalName);
         AnimalData.Add(animalData);
 
         SubObjectsNames.RemoveAt(0);
 
-        var row = animalData.spriteIndex % 12;
-        var col = animalData.spriteIndex / 12;
+        var index = animalData.spriteIndex - 1;
+
+        var row = index % 12;
+        var col = index / 12;
 
         foreach (var r in animalObject.GetComponentsInChildren<Renderer>())
         {
             r.enabled = true;
-            r.material.mainTextureOffset = new Vector2(row / 12f, 1 - col / 12f);
+            r.material.mainTextureOffset = new Vector2(row / 12f, 1 - col / 12f - 1 / 12f);
         }
 
         // TODO : floor?
