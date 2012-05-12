@@ -28,6 +28,9 @@ public class NetworkBootstrap : MonoBehaviour
         {
             PeerType = NetworkPeerType.Disconnected;
             errorMessage = "IP address invalid : " + IP;
+
+            // DEBUG -- start server anyway so we can test networking
+            CreateServer();
         }
     }
 
@@ -73,13 +76,16 @@ public class NetworkBootstrap : MonoBehaviour
         }
     }
 
-    void OnPlayerConnected()
+    void OnPlayerConnected(NetworkPlayer player) 
     {
         waitingForClient = false;
     }
 
-    void OnPlayerDisconnected()
+    void OnPlayerDisconnected(NetworkPlayer player) 
     {
+        Network.RemoveRPCs(player);
+        Network.DestroyPlayerObjects(player);
+
         waitingForClient = true;
         // TODO : make sure that the game ends? (done in each component?)
     }
