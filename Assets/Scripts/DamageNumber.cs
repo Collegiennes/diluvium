@@ -5,8 +5,9 @@ public class DamageNumber : MonoBehaviour
 {
     const int ShadowOffset = 2;
 
-    public float Amount;
+    public string Text;
     public GUIStyle Style;
+    public Color Color = Color.red;
 
     GUIStyle shadowStyle;
     float sinceStarted;
@@ -15,6 +16,7 @@ public class DamageNumber : MonoBehaviour
     void Start()
     {
         shadowStyle = new GUIStyle(Style) { normal = { textColor = Color.black } };
+        Style.normal.textColor = Color;
         origin = transform.position;
     }
 
@@ -36,21 +38,20 @@ public class DamageNumber : MonoBehaviour
     {
         var point = Camera.main.WorldToScreenPoint(transform.position);
 
-        var text = Amount.ToString();
-        var size = Style.CalcSize(new GUIContent(text));
+        var size = Style.CalcSize(new GUIContent(Text));
 
         // shadow
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 - ShadowOffset), (int)Math.Round(Screen.height - point.y - ShadowOffset), 100, 100), text, shadowStyle);
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 - ShadowOffset), (int)Math.Round(Screen.height - point.y + ShadowOffset), 100, 100), text, shadowStyle);
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 + ShadowOffset), (int)Math.Round(Screen.height - point.y - ShadowOffset), 100, 100), text, shadowStyle);
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 + ShadowOffset), (int)Math.Round(Screen.height - point.y + ShadowOffset), 100, 100), text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 - ShadowOffset), (int)Math.Round(Screen.height - point.y - ShadowOffset), size.x, size.y), Text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 - ShadowOffset), (int)Math.Round(Screen.height - point.y + ShadowOffset), size.x, size.y), Text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 + ShadowOffset), (int)Math.Round(Screen.height - point.y - ShadowOffset), size.x, size.y), Text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 + ShadowOffset), (int)Math.Round(Screen.height - point.y + ShadowOffset), size.x, size.y), Text, shadowStyle);
 
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 - ShadowOffset), (int)Math.Round(Screen.height - point.y), 100, 100), text, shadowStyle);
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 + ShadowOffset), (int)Math.Round(Screen.height - point.y), 100, 100), text, shadowStyle);
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2), (int)Math.Round(Screen.height - point.y - ShadowOffset), 100, 100), text, shadowStyle);
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2), (int)Math.Round(Screen.height - point.y + ShadowOffset), 100, 100), text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 - ShadowOffset), (int)Math.Round(Screen.height - point.y), size.x, size.y), Text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2 + ShadowOffset), (int)Math.Round(Screen.height - point.y), size.x, size.y), Text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2), (int)Math.Round(Screen.height - point.y - ShadowOffset), size.x, size.y), Text, shadowStyle);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2), (int)Math.Round(Screen.height - point.y + ShadowOffset), size.x, size.y), Text, shadowStyle);
 
         // text
-        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2), (int)Math.Round(Screen.height - point.y), 100, 100), text, Style);
+        GUI.Label(new Rect((int)Math.Round(point.x - size.x / 2), (int)Math.Round(Screen.height - point.y), size.x, size.y), Text, Style);
     }
 }

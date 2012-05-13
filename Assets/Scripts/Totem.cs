@@ -267,7 +267,8 @@ public class Totem : MonoBehaviour
             r.material.mainTextureOffset = new Vector2(row / 4f, 1 - col / 4f - 1 / 4f);
 
         var go = Instantiate(NumberTemplate, transform.position + origin + direction, Quaternion.identity) as DamageNumber;
-        go.Amount = (float)Math.Round((adata.attack * 10) * (Random.value * 0.2f + 1 - 0.1f));
+        go.Text = Math.Round((adata.attack * 10) * (Random.value * 0.2f + 1 - 0.1f)).ToString();
+        go.Color = Color.red;
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {

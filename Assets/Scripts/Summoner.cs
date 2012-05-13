@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class Summoner : MonoBehaviour
 {
     public SpawnPoint[] SpawnPoints;
+    public DamageNumber WordDisplay;
 
     public bool IsServerSummoner;
     public bool IsFakeAI;
@@ -53,9 +54,9 @@ public class Summoner : MonoBehaviour
                 while ((thirdAnimal = animals[random.Next(0, animals.Length)]) == firstAnimal && thirdAnimal == secondAnimal) ;
 
                 var count = random.Next(1, 4);
-                if (count == 1) TrySpawn(new[] { firstAnimal });
-                if (count == 2) TrySpawn(new[] { firstAnimal, secondAnimal });
-                if (count == 3) TrySpawn(new[] { firstAnimal, secondAnimal, thirdAnimal });
+                if (count == 1) TrySpawn(new[] { firstAnimal.ToUpper() });
+                if (count == 2) TrySpawn(new[] { firstAnimal.ToUpper(), secondAnimal.ToUpper() });
+                if (count == 3) TrySpawn(new[] { firstAnimal.ToUpper(), secondAnimal.ToUpper(), thirdAnimal.ToUpper() });
 
                 willSpawnIn = random.Next(4, 8);
             }
@@ -64,6 +65,8 @@ public class Summoner : MonoBehaviour
 
     public void TrySpawn(string[] validWords)
     {
+        bool hasSpawned = false;
+
         TestList.Clear();
         TestList.Add(0); TestList.Add(1); TestList.Add(2);
 
@@ -79,28 +82,64 @@ public class Summoner : MonoBehaviour
             if (TerrainGrid.IsWalkable(x, z))
             {
                 sp.SpawnTotemOnServer((Network.isServer && !IsFakeAI) ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId, validWords);
-                return;
+                hasSpawned = true;
+                break;
             }
         }
 
-        TestList.Add(3); TestList.Add(4); 
-        while (TestList.Count > 0)
+        if (!hasSpawned)
         {
-            var i = random.Next(0, TestList.Count);
-            var sp = SpawnPoints[TestList[i]];
-            TestList.RemoveAt(i);
-
-            var x = (int)Math.Floor(sp.transform.position.x);
-            var z = (int)Math.Floor(sp.transform.position.z);
-
-            if (TerrainGrid.IsWalkable(x, z))
+            TestList.Add(3); TestList.Add(4);
+            while (TestList.Count > 0)
             {
-                sp.SpawnTotemOnServer((Network.isServer && !IsFakeAI) ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId, validWords);
-                return;
+                var i = random.Next(0, TestList.Count);
+                var sp = SpawnPoints[TestList[i]];
+                TestList.RemoveAt(i);
+
+                var x = (int)Math.Floor(sp.transform.position.x);
+                var z = (int)Math.Floor(sp.transform.position.z);
+
+                if (TerrainGrid.IsWalkable(x, z))
+                {
+                    sp.SpawnTotemOnServer((Network.isServer && !IsFakeAI) ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId, validWords);
+                    hasSpawned = true;
+                    break;
+                }
             }
         }
+
+        if (hasSpawned)
+            networkView.RPC("ShowWords", RPCMode.All, validWords[0],
+                            validWords.Length > 1 ? validWords[1] : string.Empty,
+                            validWords.Length > 2 ? validWords[2] : string.Empty);
 
         Debug.Log("No more space to spawn!");
+    }
+
+    [RPC]
+    public void ShowWords(string animalName1, string animalName2, string animalName3)
+    {
+        var maxHeight = !string.IsNullOrEmpty(animalName3) ? 3.4f : !string.IsNullOrEmpty(animalName2) ? 2.85f : 2.3f;
+
+        var go = Instantiate(WordDisplay, transform.position + Vector3.up * maxHeight, Quaternion.identity) as DamageNumber;
+        go.Color = Color.white;
+        go.Text = animalName1;
+
+        if (!string.IsNullOrEmpty(animalName2))
+            TaskManager.Instance.WaitFor(0.1f).Then(() =>
+            {
+                go = Instantiate(WordDisplay, transform.position + Vector3.up * (maxHeight - 0.55f), Quaternion.identity) as DamageNumber;
+                go.Color = Color.white;
+                go.Text = animalName2;
+            });
+
+        if (!string.IsNullOrEmpty(animalName3))
+            TaskManager.Instance.WaitFor(0.2f).Then(() =>
+            {
+                go = Instantiate(WordDisplay, transform.position + Vector3.up * (maxHeight - 1.1f), Quaternion.identity) as DamageNumber;
+                go.Color = Color.white;
+                go.Text = animalName3;
+            });
     }
 
     [RPC]
