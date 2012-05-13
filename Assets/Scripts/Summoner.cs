@@ -1,15 +1,14 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Summoner : MonoBehaviour
 {
-    public SpawnPoint SpawnPoint;
+    public SpawnPoint[] SpawnPoints;
 
-    void Awake()
-    {
-    }
+    public bool IsServerSummoner;
 
-    void Update()
+    void Start()
     {
+        TerrainGrid.Instance.Summoners.Add(IsServerSummoner ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId,
+                                           this);
     }
 }

@@ -22,7 +22,7 @@ public class Totem : MonoBehaviour
 
     public int TotemIntelligence { get; private set; }
 
-    public NetworkPlayer Owner;
+    public int Owner;
 
     GameObject Shadow;
 
@@ -53,11 +53,11 @@ public class Totem : MonoBehaviour
     }
 
     [RPC]
-    public void SetOwner(NetworkPlayer owner)
+    public void SetOwner(int ownerPlayerId)
     {
-        Owner = owner;
+        Owner = ownerPlayerId;
         if (Network.isServer)
-            TerrainGrid.RegisterTotem(owner, this);
+            TerrainGrid.RegisterTotem(ownerPlayerId, this);
     }
 
     [RPC]
@@ -172,7 +172,7 @@ public class Totem : MonoBehaviour
         var destination = new Vector3(x + 0.5f, targetHeight, z + 0.5f);
 
         if (Network.isServer)
-            TerrainGrid.MoveTotem(Owner, origin, destination);
+            TerrainGrid.MoveTotem(origin, destination);
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {

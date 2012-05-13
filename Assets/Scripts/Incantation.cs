@@ -12,9 +12,6 @@ public class Incantation : MonoBehaviour
 
     public Texture2D portraits;
 
-    public SpawnPoint ServerSpawnPoint;
-    public SpawnPoint ClientSpawnPoint;
-
     string text = "";
 
     void OnGUI ()
@@ -51,11 +48,9 @@ public class Incantation : MonoBehaviour
 
         // idle : 2/3f
         // hurt : 0/3f
-        // summoning : 1/3f
+        // fail : 1/3f
 
         var offset = 2 / 3f;
-        if (!string.IsNullOrEmpty(text))
-            offset = 1 / 3f;
 
         GUI.DrawTextureWithTexCoords(new Rect(0, Screen.height - portraits.height, 512, portraits.height),
                                      portraits, new Rect(offset, 0, 1 / 3f, 1));
@@ -73,9 +68,11 @@ public class Incantation : MonoBehaviour
                 if (validWords.Length > 0)
                 {
                     if (Network.isServer)
-                        ServerSpawnPoint.SpawnTotemOnServer(validWords);
+                        TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].SpawnPoints[Random.Range(0, 3)].
+                            SpawnTotemOnServer(TerrainGrid.ServerPlayerId, validWords);
                     else
-                        ClientSpawnPoint.SpawnTotemOnServer(validWords);
+                        TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].SpawnPoints[Random.Range(0, 3)].
+                            SpawnTotemOnServer(TerrainGrid.ClientPlayerId, validWords);
                 }
 
                 //foreach(string word in words)
