@@ -16,6 +16,8 @@ public class Totem : MonoBehaviour
     readonly List<GameObject> AnimalObjects = new List<GameObject>(3);
     readonly List<AnimalData> AnimalData = new List<AnimalData>(3);
 
+    public int TotemIntelligence { get; private set; }
+
     NetworkPlayer Owner;
 
     // server-side
