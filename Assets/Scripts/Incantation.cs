@@ -19,6 +19,13 @@ public class Incantation : MonoBehaviour
 
     string text = "";
 
+    public static Incantation Instance { get; private set; }
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
     void ShowHealthBar(float amount, Color full, Color empty)
     {
         GUILayout.BeginHorizontal();
