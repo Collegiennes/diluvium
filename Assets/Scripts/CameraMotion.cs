@@ -7,8 +7,7 @@ public class CameraMotion : MonoBehaviour
     {
 	    transform.localRotation = Quaternion.Euler(0, 45, 0);
 	}
-	
-    bool firstUpdate = true;
+
 	void Update ()
     {
         Vector3 minPos = new Vector3(100, 100, 100);
@@ -27,11 +26,6 @@ public class CameraMotion : MonoBehaviour
         Vector3 center = (minPos + maxPos)/2;
 
         float t = Mathf.Pow(0.5f, Time.deltaTime);
-        if(firstUpdate)
-        {
-            t = 0;
-            firstUpdate = false;
-        }
         transform.position = t * transform.position + (1-t) * center;
 	}
 }
