@@ -96,13 +96,13 @@ public class AnimalDatabase : MonoBehaviour
             }
         }
 
-        string msg = "";
-        foreach(AnimalData animal in Animals.Values)
-        {
-            msg += animal.name + " " + animal.attack + " " + animal.health + " " +
-                   animal.speed + " " + animal.intelligence + "\n";
-        }
-        print(msg);
+        //string msg = "";
+        //foreach(AnimalData animal in Animals.Values)
+        //{
+        //    msg += animal.name + " " + animal.attack + " " + animal.health + " " +
+        //           animal.speed + " " + animal.intelligence + "\n";
+        //}
+        //print(msg);
 	}
 
     int ParseStat(string s)

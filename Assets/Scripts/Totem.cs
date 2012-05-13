@@ -12,17 +12,22 @@ public class Totem : MonoBehaviour
     public AnimationCurve JumpHeightCurve;
     public AnimationCurve JumpTimeCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
+    public delegate void MyTurnHandler(Totem t);
+    public event MyTurnHandler MyTurn;
+
     List<string> SubObjectsNames = new List<string> { "LowAnimal", "MidAnimal", "HighAnimal" };
 
     readonly List<GameObject> AnimalObjects = new List<GameObject>(3);
     readonly List<AnimalData> AnimalData = new List<AnimalData>(3);
 
-    NetworkPlayer Owner;
+    public int TotemIntelligence { get; private set; }
+
+    public NetworkPlayer Owner;
 
     GameObject Shadow;
 
     // server-side
-    int movementAverageSpeed;
+    int totemSpeed;
     int moveTimeBuffer;
     readonly List<int> attackTimeBuffers = new List<int>(3);   
 
@@ -78,7 +83,8 @@ public class Totem : MonoBehaviour
         }
 
         // TODO : floor?
-        movementAverageSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
+        totemSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
+        TotemIntelligence = AnimalData.Max(x => x.intelligence);
 
         if (Network.isServer)
             attackTimeBuffers.Add(0);
@@ -107,37 +113,16 @@ public class Totem : MonoBehaviour
         bool doMove = false;
 
         moveTimeBuffer++;
-        if (moveTimeBuffer == 4 && movementAverageSpeed == 1)       doMove = true;
-        else if (moveTimeBuffer == 3 && movementAverageSpeed == 2)  doMove = true;
-        else if (moveTimeBuffer == 2 && movementAverageSpeed == 3)  doMove = true;
-        else if (moveTimeBuffer == 1 && movementAverageSpeed == 4)  doMove = true;
+        if (moveTimeBuffer == 4 && totemSpeed == 1)       doMove = true;
+        else if (moveTimeBuffer == 3 && totemSpeed == 2)  doMove = true;
+        else if (moveTimeBuffer == 2 && totemSpeed == 3)  doMove = true;
+        else if (moveTimeBuffer == 1 && totemSpeed == 4)  doMove = true;
 
         if (doMove)
         {
             moveTimeBuffer = 0;
-
-            // TODO : AI
-
-            // debug -- random direction that doesn't go out of the terrain
-            Vector3 direction = Vector3.zero;
-            var valid = false;
-            foreach (var d in new [] { Vector3.right, Vector3.left, Vector3.forward, Vector3.back }.OrderBy(elem => Guid.NewGuid()))
-            {
-                var x = (int) Math.Floor(transform.position.x + d.x);
-                var z = (int) Math.Floor(transform.position.z + d.z);
-
-                valid |= x >= 0 && x < TerrainGrid.Instance.sizeX &&
-                         z >= 0 && z < TerrainGrid.Instance.sizeZ;
-
-                if (valid)
-                {
-                    direction = d;
-                    break;
-                }
-            }
-
-            if (valid)
-                networkView.RPC("MoveTo", RPCMode.All, direction);
+            if(MyTurn != null)
+                MyTurn(this);
         }
 
         // TODO : If near enemy and wants to attack
