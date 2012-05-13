@@ -21,6 +21,7 @@ public class Totem : MonoBehaviour
     readonly List<AnimalData> AnimalData = new List<AnimalData>(3);
 
     public int TotemIntelligence { get; private set; }
+    public int TotemMaxHealth { get; private set; }
 
     public int Owner;
 
@@ -85,6 +86,7 @@ public class Totem : MonoBehaviour
         // TODO : floor?
         totemSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
         TotemIntelligence = AnimalData.Max(x => x.intelligence);
+        TotemMaxHealth = AnimalData.Sum(x => x.health);
 
         if (Network.isServer)
             attackTimeBuffers.Add(0);
