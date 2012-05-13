@@ -25,7 +25,7 @@ public class Totem : MonoBehaviour
     NetworkPlayer Owner;
 
     // server-side
-    int movementAverageSpeed;
+    int totemSpeed;
     int moveTimeBuffer;
     readonly List<int> attackTimeBuffers = new List<int>(3);   
 
@@ -79,7 +79,8 @@ public class Totem : MonoBehaviour
         }
 
         // TODO : floor?
-        movementAverageSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
+        totemSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
+        TotemIntelligence = AnimalData.Max(x => x.intelligence);
 
         if (Network.isServer)
             attackTimeBuffers.Add(0);
@@ -97,10 +98,10 @@ public class Totem : MonoBehaviour
         bool doMove = false;
 
         moveTimeBuffer++;
-        if (moveTimeBuffer == 4 && movementAverageSpeed == 1)       doMove = true;
-        else if (moveTimeBuffer == 3 && movementAverageSpeed == 2)  doMove = true;
-        else if (moveTimeBuffer == 2 && movementAverageSpeed == 3)  doMove = true;
-        else if (moveTimeBuffer == 1 && movementAverageSpeed == 4)  doMove = true;
+        if (moveTimeBuffer == 4 && totemSpeed == 1)       doMove = true;
+        else if (moveTimeBuffer == 3 && totemSpeed == 2)  doMove = true;
+        else if (moveTimeBuffer == 2 && totemSpeed == 3)  doMove = true;
+        else if (moveTimeBuffer == 1 && totemSpeed == 4)  doMove = true;
 
         if (doMove)
         {
