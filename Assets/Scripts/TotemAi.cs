@@ -115,15 +115,15 @@ public class TotemAi : MonoBehaviour
         if(path == null)
             return;
 
+        Vector2 direction = path[1] - path[0];
         if(path.Count > 2)
         {
-            Vector2 direction = path[1] - path[0];
-            networkView.RPC("MoveTo", RPCMode.All,
-                new Vector3(direction.x, 0, direction.y));
+            networkView.RPC(path.Count > 2 ? "MoveTo" : "AttackTowards",
+                RPCMode.All, new Vector3(direction.x, 0, direction.y));
         }
         else
         {
-            // ATTACK!
+            totem.AttackTowards(direction);
         }
 	}
 }

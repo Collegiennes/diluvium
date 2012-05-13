@@ -133,23 +133,6 @@ public class Totem : MonoBehaviour
 
     void OnAttackBeat(int animalId)
     {
-        bool doAttack = false;
-        var data = AnimalData[animalId];
-
-        attackTimeBuffers[animalId]++;
-        if (attackTimeBuffers[animalId] == 4 && data.speed == 1) doAttack = true;
-        else if (attackTimeBuffers[animalId] == 3 && data.speed == 2) doAttack = true;
-        else if (attackTimeBuffers[animalId] == 2 && data.speed == 3) doAttack = true;
-        else if (attackTimeBuffers[animalId] == 1 && data.speed == 4) doAttack = true;
-
-        if (doAttack)
-        {
-            attackTimeBuffers[animalId] = 0;
-
-            // TODO : grab the enemy's view ID
-            NetworkViewID enemyId = default(NetworkViewID);
-            networkView.RPC("AttackWith", RPCMode.All, animalId, enemyId);
-        }
     }
 
     [RPC]
@@ -186,6 +169,30 @@ public class Totem : MonoBehaviour
 
             return step >= 1;
         });
+    }
+
+    public void AttackTowards(Vector3 direction)
+    {
+        for (int animalId = 0; animalId < AnimalObjects.Count; animalId++)
+        {
+            bool doAttack = false;
+            var data = AnimalData[animalId];
+
+            attackTimeBuffers[animalId]++;
+            if (attackTimeBuffers[animalId] == 4 && data.speed == 1) doAttack = true;
+            else if (attackTimeBuffers[animalId] == 3 && data.speed == 2) doAttack = true;
+            else if (attackTimeBuffers[animalId] == 2 && data.speed == 3) doAttack = true;
+            else if (attackTimeBuffers[animalId] == 1 && data.speed == 4) doAttack = true;
+
+            if (doAttack)
+            {
+                attackTimeBuffers[animalId] = 0;
+
+                // TODO : grab the enemy's view ID
+                NetworkViewID enemyId = default(NetworkViewID);
+                networkView.RPC("AttackWith", RPCMode.All, animalId, enemyId);
+            }
+        }
     }
 
     [RPC]
