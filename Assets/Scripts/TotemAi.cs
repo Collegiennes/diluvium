@@ -38,13 +38,14 @@ public class TotemAi : MonoBehaviour
 
         Vector2 myCoord = CoordOf(transform);
 
-        float wantToKillSummoner = 1;
-        float wantToDefendSummoner = 1;
+        float intelligence = totem.TotemIntelligence/6.0f;
+        float wantToKillSummoner = intelligence;
+        float wantToDefendSummoner = 1-intelligence;
         foreach(Totem t in TerrainGrid.Instance.Totems[otherPlayer])
         {
             desire[CoordOf(t.transform)] =
-                wantToDefendSummoner*Closeness(mySummoner, CoordOf(t.transform)) +
-                Closeness(myCoord, CoordOf(t.transform));
+                wantToDefendSummoner*(Closeness(mySummoner, CoordOf(t.transform)) +
+                Closeness(myCoord, CoordOf(t.transform)));
         }
         desire[otherSummoner] =
             wantToKillSummoner * Closeness(myCoord, otherSummoner);

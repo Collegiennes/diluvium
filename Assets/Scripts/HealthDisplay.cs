@@ -8,7 +8,13 @@ public class HealthDisplay : MonoBehaviour
 
     void Update()
     {
-        pivot.localScale = new Vector3(
-            (float)totem.TotemCurrentHealth/totem.TotemMaxHealth, 1, 1);
+        float scale = pivot.localScale.x;
+        float t = Mathf.Pow(0.05f, Time.deltaTime);
+        scale = scale * t +
+            (float)totem.TotemCurrentHealth/totem.TotemMaxHealth*(1-t);
+        pivot.localScale = new Vector3(scale, 1, 1);
+
+        transform.localPosition =
+            new Vector3(0, 0.28f+0.865f*totem.AnimalObjects.Count, 0);
     }
 }
