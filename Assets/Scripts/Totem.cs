@@ -62,11 +62,19 @@ public class Totem : MonoBehaviour
     }
 
     [RPC]
-    public void SetOwner(int ownerPlayerId)
+    public bool SetOwner(int ownerPlayerId)
     {
         Owner = ownerPlayerId;
         if (Network.isServer)
+        {
             Cell = TerrainGrid.RegisterTotem(ownerPlayerId, this);
+            if (Cell == null)
+            {
+                Network.Destroy(gameObject);
+                return false;
+            }
+        }
+        return true;
     }
 
     [RPC]

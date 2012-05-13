@@ -43,7 +43,7 @@ public class TerrainGrid : MonoBehaviour
 
         var gridCell = Instance.Cells[x, z];
         if (gridCell.Occupant != null)
-            throw new InvalidOperationException("Cell already occupied");
+            return null;
 
         gridCell.Occupant = totem.gameObject;
         Instance.Totems[playerId].Add(totem);

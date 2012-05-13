@@ -28,6 +28,7 @@ public class SpawnPoint : MonoBehaviour
         if (!string.IsNullOrEmpty(animalName2)) totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName2);
         if (!string.IsNullOrEmpty(animalName3)) totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName3);
 
-        totemGo.networkView.RPC("SetOwner", RPCMode.All, owner);
+        if (totemGo.SetOwner(owner))
+            totemGo.networkView.RPC("SetOwner", RPCMode.Others, owner);
     }
 }
