@@ -216,16 +216,25 @@ public class Totem : MonoBehaviour
 
         var hurtGo = Instantiate(HurtTemplate, transform.position + origin + direction - Camera.main.transform.forward * 10, Quaternion.identity) as GameObject;
 
+        var effectIdx = AnimalData[animalId].effectIndex - 1;
+        var row = effectIdx % 4;
+        var col = effectIdx / 4;
+
+        foreach (var r in hurtGo.GetComponentsInChildren<Renderer>())
+            r.material.mainTextureOffset = new Vector2(row / 4f, 1 - col / 4f - 1 / 4f);
+
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
             var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
-            var easedStep = Easing.EaseIn(step, EasingType.Quadratic);
+            var easedStep = Easing.EaseOut(step, EasingType.Quadratic);
 
             foreach (var r in hurtGo.GetComponentsInChildren<Renderer>())
             {
                 var c = r.material.GetColor("_TintColor");
-                r.material.SetColor("_TintColor", new Color(c.r, c.g, c.b, 1 - step));
+                r.material.SetColor("_TintColor", new Color(c.r, c.g, c.b, 1 - easedStep));
             }
+
+            hurtGo.transform.localScale = Vector3.Lerp(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(1.25f, 1.25f, 1.25f), easedStep);
 
             if (step >= 1)
                 Destroy(hurtGo);
