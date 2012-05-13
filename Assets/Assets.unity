@@ -6059,6 +6059,7 @@ MonoBehaviour:
   - {fileID: 1165149938}
   - {fileID: 1172113247}
   - {fileID: 226918891}
+  WordDisplay: {fileID: 11400000, guid: bcc410b51a1c8404d8e27b45e4e72f6c, type: 2}
   IsServerSummoner: 0
   IsFakeAI: 1
 --- !u!1001 &386698119
@@ -23002,6 +23003,7 @@ MonoBehaviour:
   - {fileID: 1595552447}
   - {fileID: 1438816412}
   - {fileID: 15383670}
+  WordDisplay: {fileID: 11400000, guid: bcc410b51a1c8404d8e27b45e4e72f6c, type: 2}
   IsServerSummoner: 1
   IsFakeAI: 0
 --- !u!1001 &1629253455
