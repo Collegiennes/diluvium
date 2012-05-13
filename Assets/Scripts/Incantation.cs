@@ -10,6 +10,8 @@ public class Incantation : MonoBehaviour
     public GUIStyle textBoxStyle;
     public GUIStyle textStyle;
 
+    public Texture2D portraits;
+
     public SpawnPoint ServerSpawnPoint;
     public SpawnPoint ClientSpawnPoint;
 
@@ -19,9 +21,7 @@ public class Incantation : MonoBehaviour
     {
         var textureHeight = containerStyle.normal.background.height;
 
-        GUILayout.BeginArea(new Rect(0, Screen.height - textureHeight, containerStyle.normal.background.width, textureHeight));
-        GUILayout.BeginHorizontal(containerStyle);
-        GUILayout.EndHorizontal();
+        GUILayout.BeginArea(new Rect(0, Screen.height - textureHeight, containerStyle.normal.background.width, textureHeight), containerStyle);
         GUILayout.EndArea();
 
         GUILayout.BeginArea(new Rect(291 - 48, Screen.height - 140, 414, 62));
@@ -48,6 +48,17 @@ public class Incantation : MonoBehaviour
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
+
+        // idle : 2/3f
+        // hurt : 0/3f
+        // summoning : 1/3f
+
+        var offset = 2 / 3f;
+        if (!string.IsNullOrEmpty(text))
+            offset = 1 / 3f;
+
+        GUI.DrawTextureWithTexCoords(new Rect(0, Screen.height - portraits.height, 512, portraits.height),
+                                     portraits, new Rect(offset, 0, 1 / 3f, 1));
 
         // handle text entry
         Event e = Event.current;

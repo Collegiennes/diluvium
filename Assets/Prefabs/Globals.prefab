@@ -41,7 +41,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2fd930333056c447b097186f1093ec6, type: 1}
   m_Name: 
-  errorTint: {r: 1, g: 0, b: 0, a: 1}
+  errorTint: {r: .301960796, g: .301960796, b: .301960796, a: 1}
   successTint: {r: 1, g: 1, b: 1, a: 1}
   containerStyle:
     m_Name: 
@@ -134,10 +134,10 @@ MonoBehaviour:
       m_Top: 0
       m_Bottom: 0
     m_Padding:
-      m_Left: 27
-      m_Right: 27
-      m_Top: 21
-      m_Bottom: 21
+      m_Left: 20
+      m_Right: 20
+      m_Top: 15
+      m_Bottom: 15
     m_Margin:
       m_Left: 0
       m_Right: 0
@@ -216,10 +216,11 @@ MonoBehaviour:
     m_ClipOffset: {x: 0, y: 0}
     m_FixedWidth: 0
     m_FixedHeight: 0
-    m_FontSize: 30
+    m_FontSize: 26
     m_FontStyle: 0
     m_StretchWidth: 0
     m_StretchHeight: 0
+  portraits: {fileID: 2800000, guid: 3392a121d13c346eda89a2d5f27b902c, type: 1}
   ServerSpawnPoint: {fileID: 0}
   ClientSpawnPoint: {fileID: 0}
 --- !u!114 &11400002
