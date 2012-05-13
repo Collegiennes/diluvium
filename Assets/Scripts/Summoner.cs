@@ -11,11 +11,18 @@ public class Summoner : MonoBehaviour
     public bool IsServerSummoner;
     public bool IsFakeAI;
 
+    public float Health { get; private set; }
+
     System.Random random = new System.Random();
     readonly List<int> TestList = new List<int>();
 
     // fake ai stuff
     float willSpawnIn;
+
+    void Awake()
+    {
+        Health = 20;
+    }
 
     void Start()
     {
