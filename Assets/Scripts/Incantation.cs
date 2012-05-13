@@ -7,6 +7,7 @@ public class Incantation : MonoBehaviour
     public Color errorTint = Color.red;
     public Color successTint = Color.white;
     public GUIStyle containerStyle;
+    public GUIStyle textBoxStyle;
     public GUIStyle textStyle;
 
     public SpawnPoint ServerSpawnPoint;
@@ -16,12 +17,15 @@ public class Incantation : MonoBehaviour
 
     void OnGUI ()
     {
-        GUILayout.BeginArea(new Rect(
-            0,
-            Screen.height-containerStyle.padding.horizontal-textStyle.fontSize,
-            Screen.width-containerStyle.padding.vertical,
-            containerStyle.padding.vertical+textStyle.fontSize));
+        var textureHeight = containerStyle.normal.background.height;
+
+        GUILayout.BeginArea(new Rect(0, Screen.height - textureHeight, containerStyle.normal.background.width, textureHeight));
         GUILayout.BeginHorizontal(containerStyle);
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
+
+        GUILayout.BeginArea(new Rect(291 - 48, Screen.height - 140, 414, 62));
+        GUILayout.BeginHorizontal(textBoxStyle);
 
         string[] words = text.Split(' ');
         for(int i = 0; i < words.Length; i++)
@@ -37,9 +41,9 @@ public class Incantation : MonoBehaviour
             GUI.color = Color.white;
 
             if(i < words.Length-1)
-                GUILayout.Space(12);
+                GUILayout.Space(11);
             else
-                GUILayout.Label("_", textStyle);
+                GUILayout.Label("|", textStyle);
         }
 
         GUILayout.EndHorizontal();
@@ -50,7 +54,7 @@ public class Incantation : MonoBehaviour
         if(e.type == EventType.KeyDown)
         {
             if(char.IsLetter(e.character) || (e.character == ' ' && words.Length < 3))
-                text += e.character;
+                text += char.ToUpper(e.character);
             else if(e.character == '\n')
             {
                 var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToArray();
