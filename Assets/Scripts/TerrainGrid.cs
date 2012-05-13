@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
@@ -13,27 +15,115 @@ public class TerrainGrid : MonoBehaviour
         Instance = this;
     }
 
-    public float[,] Height { get; private set; }
+    public GridCell[,] Cells { get; private set; }
+
+    readonly public Dictionary<NetworkPlayer, Summoner> Summoners = new Dictionary<NetworkPlayer, Summoner>();
+    readonly public Dictionary<NetworkPlayer, List<Totem>> Totems = new Dictionary<NetworkPlayer, List<Totem>>();
+
+    public static NetworkPlayer OtherPlayer { get; private set; }
+    public static NetworkPlayer ServerPlayer
+    {
+        get
+        {
+            if (!Network.isServer) throw new InvalidOperationException("Only server does game logic, ya dummy!");
+            return Network.player;
+        } 
+    }
+
+    public static bool IsWalkable(int x, int z)
+    {
+        return x >= 0 && x < Instance.sizeX &&
+               z >= 0 && z < Instance.sizeZ &&
+               Instance.Cells[x, z].Occupant == null;
+    }
+
+    public static void RegisterTotem(NetworkPlayer player, Totem totem)
+    {
+        var x = (int) Math.Floor(totem.transform.position.x);
+        var z = (int) Math.Floor(totem.transform.position.z);
+
+        var gridCell = Instance.Cells[x, z];
+        if (gridCell.Occupant != null)
+            throw new InvalidOperationException("Cell already occupied");
+
+        gridCell.Occupant = totem.gameObject;
+        Instance.Totems[player].Add(totem);
+    }
+    public static void MoveTotem(NetworkPlayer player, Vector3 oldPosition, Vector3 newPosition)
+    {
+        var oldX = (int)Math.Floor(oldPosition.x);
+        var oldZ = (int)Math.Floor(oldPosition.z);
+        var oldCell = Instance.Cells[oldX, oldZ];
+
+        var newX = (int)Math.Floor(newPosition.x);
+        var newZ = (int)Math.Floor(newPosition.z);
+        var newCell = Instance.Cells[newX, newZ];
+
+        newCell.Occupant = oldCell.Occupant;
+        oldCell.Occupant = null;
+    }
+    public static void UnregisterTotem(NetworkPlayer player, Totem totem)
+    {
+        var x = (int)Math.Floor(totem.transform.position.x);
+        var z = (int)Math.Floor(totem.transform.position.z);
+
+        Instance.Cells[x, z].Occupant = null;
+        Instance.Totems[player].Remove(totem);
+    }
+
+    public static float GetHeightAt(Vector3 position)
+    {
+        var x = (int)Math.Floor(position.x);
+        var z = (int)Math.Floor(position.z);
+
+        return Instance.Cells[x, z].Height;
+    }
+    public static float GetHeightAt(int x, int z)
+    {
+        return Instance.Cells[x, z].Height;
+    }
 
     void Start()
     {
-        Height = new float[sizeX, sizeZ];
+        Cells = new GridCell[sizeX, sizeZ];
 
         for(int i = 0; i < sizeX; i++) for(int j = 0; j < sizeZ; j++)
         {
-
             RaycastHit hit;
-            if(Physics.Raycast(
-                transform.TransformPoint(new Vector3(i+0.5f, 100, j+0.5f)),
-                -Vector3.up, out hit, Mathf.Infinity))
+            if(Physics.Raycast(transform.TransformPoint(new Vector3(i+0.5f, 100, j+0.5f)),
+                               -Vector3.up, out hit, Mathf.Infinity))
             {
-                Height[i, j] = transform.InverseTransformPoint(hit.point).y;
+                Cells[i, j] = new GridCell
+                                  {
+                                      X = i,
+                                      Z = j,
+                                      Height = transform.InverseTransformPoint(hit.point).y
+                                  };
             }
             else
-            {
-                Height[i, j] = 100;
-            }
+                Cells[i, j] = new GridCell { X = i, Z = j, Height = 100 };
                     
+        }
+    }
+
+    void OnServerInitialized()
+    {
+        Summoners.Add(Network.player, null);
+        Totems.Add(Network.player, new List<Totem>());
+    }
+    void OnPlayerConnected(NetworkPlayer player)
+    {
+        Summoners.Add(OtherPlayer = player, null);
+        Totems.Add(OtherPlayer = player, new List<Totem>());
+    }
+    void OnPlayerDisconnected(NetworkPlayer player)
+    {
+        if (player == OtherPlayer)
+        {
+            Summoners.Remove(OtherPlayer);
+            Totems.Remove(OtherPlayer);
+
+            OtherPlayer = default(NetworkPlayer);
         }
     }
 
@@ -41,7 +131,7 @@ public class TerrainGrid : MonoBehaviour
     {
         for(int i = 0; i < sizeX; i++) for(int j = 0; j < sizeZ; j++)
         {
-            float h = Height == null ? 0 : Height[i, j] + 0.01f;
+            float h = Cells == null ? 0 : Cells[i, j].Height + 0.01f;
             Gizmos.DrawLine(transform.TransformPoint(new Vector3(i,   h, j  )),
                             transform.TransformPoint(new Vector3(i+1, h, j  )));
             Gizmos.DrawLine(transform.TransformPoint(new Vector3(i,   h, j+1)),
@@ -52,4 +142,12 @@ public class TerrainGrid : MonoBehaviour
                             transform.TransformPoint(new Vector3(i+1, h, j+1)));
         }
     }
+}
+
+public class GridCell
+{
+    public GameObject Occupant { get; set; }
+    public float Height { get; set; }
+    public int X { get; set; }
+    public int Z { get; set; }
 }

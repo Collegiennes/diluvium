@@ -7890,6 +7890,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 7c899ac6788f2c143a45405ec9467f2d, type: 2}
+      propertyPath: m_Volume
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7c899ac6788f2c143a45405ec9467f2d, type: 2}
   m_RootGameObject: {fileID: 912717946}
@@ -10957,7 +10961,7 @@ AudioSource:
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: 379c80f732faa4f14b3504924f27e576, type: 1}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 1
   Mute: 0
