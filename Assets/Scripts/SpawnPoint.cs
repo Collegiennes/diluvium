@@ -25,13 +25,17 @@ public class SpawnPoint : MonoBehaviour
         if (!Network.isServer)
             throw new InvalidOperationException("Spawning only allowed on the server!");
 
+        var x = (int)Math.Floor(transform.position.x);
+        var z = (int)Math.Floor(transform.position.z);
+        if (!TerrainGrid.IsWalkable(x, z)) return;
+
         var totemGo = Network.Instantiate(TotemPrefab, transform.position, Quaternion.identity, 0) as Totem;
 
         totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName1);
         if (!string.IsNullOrEmpty(animalName2)) totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName2);
         if (!string.IsNullOrEmpty(animalName3)) totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName3);
 
-        if (totemGo.SetOwner(owner))
-            totemGo.networkView.RPC("SetOwner", RPCMode.Others, owner);
+        totemGo.SetOwner(owner);
+        totemGo.networkView.RPC("SetOwner", RPCMode.Others, owner);
     }
 }

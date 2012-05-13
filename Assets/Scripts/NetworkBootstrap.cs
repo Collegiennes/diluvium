@@ -15,6 +15,8 @@ public class NetworkBootstrap : MonoBehaviour
     string errorMessage;
     string IP;
 
+    public bool LocalMode;
+
     void Awake()
     {
         IP = Dns.GetHostAddresses(Dns.GetHostName()).First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
@@ -27,10 +29,14 @@ public class NetworkBootstrap : MonoBehaviour
         else
         {
             PeerType = NetworkPeerType.Disconnected;
-            errorMessage = "IP address invalid : " + IP;
+            errorMessage = "IP address invalid : " + IP + "; starting local mode";
 
-            // DEBUG -- start server anyway so we can test networking
-            //CreateServer();
+            LocalMode = true;
+
+            CreateServer();
+            TimeKeeper.Instance.audio.Play();
+            TaskManager.Instance.WaitUntil(_ => TerrainGrid.Instance.Summoners.ContainsKey(TerrainGrid.ClientPlayerId))
+                .Then(() => { TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].IsFakeAI = true; });
         }
     }
 
@@ -47,7 +53,7 @@ public class NetworkBootstrap : MonoBehaviour
                 break;
 
             case NetworkPeerType.Server:
-                if (waitingForClient)
+                if (waitingForClient && !LocalMode)
                 {
                     GUILayout.Label("Waiting for client...");
                 }
