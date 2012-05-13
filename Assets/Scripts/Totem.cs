@@ -22,13 +22,14 @@ public class Totem : MonoBehaviour
 
     public int TotemIntelligence { get; private set; }
     public int TotemMaxHealth { get; private set; }
-    public int TotemCurrentHealth { get; private set; }
+    public float TotemCurrentHealth { get; private set; }
 
     public int Owner;
 
     GameObject Shadow;
 
     public GameObject HurtTemplate;
+    bool disposed;
 
     // server-side
     int totemSpeed;
@@ -91,10 +92,14 @@ public class Totem : MonoBehaviour
         totemSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
         TotemIntelligence = AnimalData.Max(x => x.intelligence);
         TotemMaxHealth = AnimalData.Sum(x => x.health);
-        TotemCurrentHealth = TotemMaxHealth/2;
+        TotemCurrentHealth = TotemMaxHealth;
 
         if (Network.isServer)
             attackTimeBuffers.Add(0);
+
+        if (AnimalObjects.Count == 1) name = animalName;
+        else
+            name += " " + animalName;
     }
 
     void Update()
@@ -113,6 +118,7 @@ public class Totem : MonoBehaviour
         TimeKeeper.Instance.Beat -= OnBeat;
         if (Network.isServer)
             TerrainGrid.UnregisterTotem(Owner, this);
+        disposed = true;
     }
 
     void OnBeat()
@@ -158,6 +164,22 @@ public class Totem : MonoBehaviour
                 {
                     attackTimeBuffers[animalId] = 0;
                     networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value);
+
+                    var x = (int)Math.Floor(transform.position.x + attackDirection.Value.x);
+                    var z = (int)Math.Floor(transform.position.z + attackDirection.Value.z);
+                    var enemyGo = TerrainGrid.Instance.Cells[x, z].Occupant;
+
+                    if (enemyGo != null && enemyGo.GetComponent<Totem>() != null && enemyGo.GetComponent<Totem>().TotemCurrentHealth > 0)
+                    {
+                        var damage = AnimalData[animalId].attack / 2f;
+                        enemyGo.networkView.RPC("Hurt", RPCMode.Others, damage);
+                        enemyGo.GetComponent<Totem>().Hurt(damage);
+                        if (enemyGo.GetComponent<Totem>().TotemCurrentHealth <= 0)
+                        {
+                            Debug.Log("animal killed : " + enemyGo + " because health was " + enemyGo.GetComponent<Totem>().TotemCurrentHealth);
+                            Network.Destroy(enemyGo);
+                        }
+                    }
                 }
             }
         }
@@ -187,6 +209,8 @@ public class Totem : MonoBehaviour
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
+            if (disposed) return true;
+
             var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
 
             var xzStep = JumpTimeCurve.Evaluate(step);
@@ -200,6 +224,12 @@ public class Totem : MonoBehaviour
     }
 
     [RPC]
+    public void Hurt(float amount)
+    {
+        TotemCurrentHealth -= amount;
+    }
+
+    [RPC]
     public void AttackWith(int animalId, Vector3 direction)
     {
         var animalObject = AnimalObjects[animalId];
@@ -208,15 +238,11 @@ public class Totem : MonoBehaviour
         var attackPosition = origin + direction * 0.25f;
         animalObject.transform.localPosition = attackPosition;
 
-        var x = (int)Math.Floor(transform.position.x + direction.x);
-        var z = (int)Math.Floor(transform.position.z + direction.z);
-        var enemyGo = TerrainGrid.Instance.Cells[x, z].Occupant;
-
-        // TODO : remove HP from enemy
+        var adata = AnimalData[animalId];
 
         var hurtGo = Instantiate(HurtTemplate, transform.position + origin + direction - Camera.main.transform.forward * 10, Quaternion.identity) as GameObject;
 
-        var effectIdx = AnimalData[animalId].effectIndex - 1;
+        var effectIdx = adata.effectIndex - 1;
         var row = effectIdx % 4;
         var col = effectIdx / 4;
 
@@ -244,6 +270,8 @@ public class Totem : MonoBehaviour
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
+            if (disposed) return true;
+
             var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
             var easedStep = Easing.EaseIn(step, EasingType.Quadratic);
 
