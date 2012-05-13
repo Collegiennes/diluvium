@@ -30,7 +30,7 @@ public class NetworkBootstrap : MonoBehaviour
             errorMessage = "IP address invalid : " + IP;
 
             // DEBUG -- start server anyway so we can test networking
-            CreateServer();
+            //CreateServer();
         }
     }
 

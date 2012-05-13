@@ -5,11 +5,13 @@ public class CameraMotion : MonoBehaviour
 {
 	void Start ()
     {
-        if(Network.isServer)
-            transform.localRotation = Quaternion.Euler(0, 45, 0);
-        else
-            transform.localRotation = Quaternion.Euler(0, -45, 0);
+        transform.localRotation = Quaternion.Euler(0, 45, 0);
 	}
+
+    void OnConnectedToServer()
+    {
+        transform.localRotation = Quaternion.Euler(0, -45, 0);
+    }
 
 	void Update ()
     {

@@ -114,8 +114,8 @@ public class Summoner : MonoBehaviour
             networkView.RPC("ShowWords", RPCMode.All, validWords[0],
                             validWords.Length > 1 ? validWords[1] : string.Empty,
                             validWords.Length > 2 ? validWords[2] : string.Empty);
-
-        Debug.Log("No more space to spawn!");
+        else
+            Debug.Log("No more space to spawn!");
     }
 
     [RPC]
@@ -128,7 +128,7 @@ public class Summoner : MonoBehaviour
         go.Text = animalName1;
 
         if (!string.IsNullOrEmpty(animalName2))
-            TaskManager.Instance.WaitFor(0.1f).Then(() =>
+            TaskManager.Instance.WaitFor(0.2f).Then(() =>
             {
                 go = Instantiate(WordDisplay, transform.position + Vector3.up * (maxHeight - 0.55f), Quaternion.identity) as DamageNumber;
                 go.Color = Color.white;
@@ -136,7 +136,7 @@ public class Summoner : MonoBehaviour
             });
 
         if (!string.IsNullOrEmpty(animalName3))
-            TaskManager.Instance.WaitFor(0.2f).Then(() =>
+            TaskManager.Instance.WaitFor(0.4f).Then(() =>
             {
                 go = Instantiate(WordDisplay, transform.position + Vector3.up * (maxHeight - 1.1f), Quaternion.identity) as DamageNumber;
                 go.Color = Color.white;

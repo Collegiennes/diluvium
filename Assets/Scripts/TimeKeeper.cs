@@ -16,7 +16,7 @@ class TimeKeeper : MonoBehaviour
         Instance = this;
 
         // DEBUG -- for local mode
-        audio.Play();
+        //audio.Play();
     }
 
     void OnPlayerConnected()
