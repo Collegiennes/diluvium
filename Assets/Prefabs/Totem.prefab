@@ -257,10 +257,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.91577244, y: 1.37594533, z: .981512606}
+  m_LocalRotation: {x: 0, y: .707106352, z: 0, w: .707107246}
+  m_LocalPosition: {x: -1.94904232, y: .5, z: 2.62224841}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 89.9999237, z: 0}
   m_Children:
   - {fileID: 400022}
   - {fileID: 400010}
@@ -795,6 +795,8 @@ MonoBehaviour:
   m_Name: 
   totem: {fileID: 11400002}
   pivot: {fileID: 400024}
+  healthFullRenderer: {fileID: 2300010}
+  healthEmptyRenderer: {fileID: 2300008}
 --- !u!148 &14800000
 NetworkView:
   m_ObjectHideFlags: 1

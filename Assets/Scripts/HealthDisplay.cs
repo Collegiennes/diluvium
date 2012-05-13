@@ -5,6 +5,26 @@ public class HealthDisplay : MonoBehaviour
 {
     public Totem totem;
     public Transform pivot;
+    public Renderer healthFullRenderer;
+    public Renderer healthEmptyRenderer;
+
+    void Start()
+    {
+        Incantation i = Incantation.Instance;
+
+        int myId = Network.isServer ?
+            TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId;
+        if(myId == totem.Owner)
+        {
+            healthFullRenderer.material.color = i.hpGoodColor;
+            healthEmptyRenderer.material.color = i.hpBadColor;
+        }
+        else
+        {
+            healthFullRenderer.material.color = i.hpEnemyGoodColor;
+            healthEmptyRenderer.material.color = i.hpEnemyBadColor;
+        }
+    }
 
     void Update()
     {
