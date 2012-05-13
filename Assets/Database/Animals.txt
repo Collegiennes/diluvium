@@ -212,9 +212,7 @@ Jim,Human,,,,,,,0
 Man,Human,,,,,,,0
 Kongoni,Antelope,,,,,,,0
 Kudu,Antelope,,,,,,,0
-Kinkajou,,,,,,,,0
 Lynx,Cat,,,,,,,0
-Loris,,,,,,,,0
 Mallard,Duck,,,,,,,0
 Mule,Goat,,,,,,,0
 Ocelot,Leopard,,,,,,,0
