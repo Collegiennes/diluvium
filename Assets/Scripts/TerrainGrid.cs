@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using System.Collections;
 
@@ -8,27 +9,25 @@ public class TerrainGrid : MonoBehaviour
     public int sizeX = 8;
     public int sizeZ = 16;
 
+    public bool LocalMode = true;
+
     public static TerrainGrid Instance { get; private set; }
 
     void Awake()
     {
         Instance = this;
+
+        Totems.Add(ServerPlayerId, new List<Totem>());
+        Totems.Add(ClientPlayerId, new List<Totem>());
     }
 
     public GridCell[,] Cells { get; private set; }
 
-    readonly public Dictionary<NetworkPlayer, Summoner> Summoners = new Dictionary<NetworkPlayer, Summoner>();
-    readonly public Dictionary<NetworkPlayer, List<Totem>> Totems = new Dictionary<NetworkPlayer, List<Totem>>();
+    readonly public Dictionary<int, Summoner> Summoners = new Dictionary<int, Summoner>();
+    readonly public Dictionary<int, List<Totem>> Totems = new Dictionary<int, List<Totem>>();
 
-    public static NetworkPlayer OtherPlayer { get; private set; }
-    public static NetworkPlayer ServerPlayer
-    {
-        get
-        {
-            if (!Network.isServer) throw new InvalidOperationException("Only server does game logic, ya dummy!");
-            return Network.player;
-        } 
-    }
+    public const int ServerPlayerId = 0;
+    public const int ClientPlayerId = 1;
 
     public static bool IsWalkable(int x, int z)
     {
@@ -37,7 +36,7 @@ public class TerrainGrid : MonoBehaviour
                Instance.Cells[x, z].Occupant == null;
     }
 
-    public static void RegisterTotem(NetworkPlayer player, Totem totem)
+    public static void RegisterTotem(int playerId, Totem totem)
     {
         var x = (int) Math.Floor(totem.transform.position.x);
         var z = (int) Math.Floor(totem.transform.position.z);
@@ -47,9 +46,9 @@ public class TerrainGrid : MonoBehaviour
             throw new InvalidOperationException("Cell already occupied");
 
         gridCell.Occupant = totem.gameObject;
-        Instance.Totems[player].Add(totem);
+        Instance.Totems[playerId].Add(totem);
     }
-    public static void MoveTotem(NetworkPlayer player, Vector3 oldPosition, Vector3 newPosition)
+    public static void MoveTotem(Vector3 oldPosition, Vector3 newPosition)
     {
         var oldX = (int)Math.Floor(oldPosition.x);
         var oldZ = (int)Math.Floor(oldPosition.z);
@@ -62,13 +61,13 @@ public class TerrainGrid : MonoBehaviour
         newCell.Occupant = oldCell.Occupant;
         oldCell.Occupant = null;
     }
-    public static void UnregisterTotem(NetworkPlayer player, Totem totem)
+    public static void UnregisterTotem(int playerId, Totem totem)
     {
         var x = (int)Math.Floor(totem.transform.position.x);
         var z = (int)Math.Floor(totem.transform.position.z);
 
         Instance.Cells[x, z].Occupant = null;
-        Instance.Totems[player].Remove(totem);
+        Instance.Totems[playerId].Remove(totem);
     }
 
     public static float GetHeightAt(Vector3 position)
@@ -106,25 +105,9 @@ public class TerrainGrid : MonoBehaviour
         }
     }
 
-    void OnServerInitialized()
-    {
-        Summoners.Add(Network.player, null);
-        Totems.Add(Network.player, new List<Totem>());
-    }
-    void OnPlayerConnected(NetworkPlayer player)
-    {
-        Summoners.Add(OtherPlayer = player, null);
-        Totems.Add(OtherPlayer = player, new List<Totem>());
-    }
     void OnPlayerDisconnected(NetworkPlayer player)
     {
-        if (player == OtherPlayer)
-        {
-            Summoners.Remove(OtherPlayer);
-            Totems.Remove(OtherPlayer);
-
-            OtherPlayer = default(NetworkPlayer);
-        }
+        Totems[ClientPlayerId].Clear();
     }
 
     void OnDrawGizmos()

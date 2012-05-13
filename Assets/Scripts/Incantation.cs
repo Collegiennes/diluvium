@@ -7,21 +7,22 @@ public class Incantation : MonoBehaviour
     public Color errorTint = Color.red;
     public Color successTint = Color.white;
     public GUIStyle containerStyle;
+    public GUIStyle textBoxStyle;
     public GUIStyle textStyle;
 
-    public SpawnPoint ServerSpawnPoint;
-    public SpawnPoint ClientSpawnPoint;
+    public Texture2D portraits;
 
     string text = "";
 
     void OnGUI ()
     {
-        GUILayout.BeginArea(new Rect(
-            0,
-            Screen.height-containerStyle.padding.horizontal-textStyle.fontSize,
-            Screen.width-containerStyle.padding.vertical,
-            containerStyle.padding.vertical+textStyle.fontSize));
-        GUILayout.BeginHorizontal(containerStyle);
+        var textureHeight = containerStyle.normal.background.height;
+
+        GUILayout.BeginArea(new Rect(0, Screen.height - textureHeight, containerStyle.normal.background.width, textureHeight), containerStyle);
+        GUILayout.EndArea();
+
+        GUILayout.BeginArea(new Rect(291 - 48, Screen.height - 140, 414, 62));
+        GUILayout.BeginHorizontal(textBoxStyle);
 
         string[] words = text.Split(' ');
         for(int i = 0; i < words.Length; i++)
@@ -37,20 +38,29 @@ public class Incantation : MonoBehaviour
             GUI.color = Color.white;
 
             if(i < words.Length-1)
-                GUILayout.Space(12);
+                GUILayout.Space(11);
             else
-                GUILayout.Label("_", textStyle);
+                GUILayout.Label("|", textStyle);
         }
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
+
+        // idle : 2/3f
+        // hurt : 0/3f
+        // fail : 1/3f
+
+        var offset = 2 / 3f;
+
+        GUI.DrawTextureWithTexCoords(new Rect(0, Screen.height - portraits.height, 512, portraits.height),
+                                     portraits, new Rect(offset, 0, 1 / 3f, 1));
 
         // handle text entry
         Event e = Event.current;
         if(e.type == EventType.KeyDown)
         {
             if(char.IsLetter(e.character) || (e.character == ' ' && words.Length < 3))
-                text += e.character;
+                text += char.ToUpper(e.character);
             else if(e.character == '\n')
             {
                 var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToArray();
@@ -58,9 +68,11 @@ public class Incantation : MonoBehaviour
                 if (validWords.Length > 0)
                 {
                     if (Network.isServer)
-                        ServerSpawnPoint.SpawnTotemOnServer(validWords);
+                        TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].SpawnPoints[Random.Range(0, 3)].
+                            SpawnTotemOnServer(TerrainGrid.ServerPlayerId, validWords);
                     else
-                        ClientSpawnPoint.SpawnTotemOnServer(validWords);
+                        TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].SpawnPoints[Random.Range(0, 3)].
+                            SpawnTotemOnServer(TerrainGrid.ClientPlayerId, validWords);
                 }
 
                 //foreach(string word in words)

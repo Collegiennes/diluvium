@@ -5,19 +5,19 @@ public class SpawnPoint : MonoBehaviour
 {
     public Totem TotemPrefab;
 
-    public void SpawnTotemOnServer(string[] animalNames)
+    public void SpawnTotemOnServer(int playerId, string[] animalNames)
     {
         if (Network.isServer)
-            SpawnTotem(Network.player, 
+            SpawnTotem(playerId, 
                        animalNames[0], 
                        animalNames.Length > 1 ? animalNames[1] : null,
                        animalNames.Length > 2 ? animalNames[2] : null);
         else
-            networkView.RPC("SpawnTotem", RPCMode.Server, Network.player, animalNames);
+            networkView.RPC("SpawnTotem", RPCMode.Server, playerId, animalNames);
     }
 
     [RPC]
-    public void SpawnTotem(NetworkPlayer owner, string animalName1, string animalName2, string animalName3)
+    public void SpawnTotem(int owner, string animalName1, string animalName2, string animalName3)
     {
         if (!Network.isServer)
             throw new InvalidOperationException("Spawning only allowed on the server!");

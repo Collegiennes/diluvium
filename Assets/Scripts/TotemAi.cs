@@ -30,14 +30,15 @@ public class TotemAi : MonoBehaviour
         // find a target
         Dictionary<Vector2,float> desire = new Dictionary<Vector2, float>();
 
-        NetworkPlayer otherPlayer = totem.Owner == TerrainGrid.OtherPlayer ?
-            TerrainGrid.ServerPlayer : TerrainGrid.OtherPlayer;
+        int otherPlayer = totem.Owner == TerrainGrid.ServerPlayerId ?
+            TerrainGrid.ClientPlayerId : TerrainGrid.ServerPlayerId;
+
         Vector2 mySummoner =
-            new Vector2(2, 2);
-            //CoordOf(TerrainGrid.Instance.Summoners[totem.Owner].transform);
+            //new Vector2(2, 2);
+            CoordOf(TerrainGrid.Instance.Summoners[totem.Owner].transform);
         Vector2 otherSummoner =
-            new Vector2(8, 2);
-            //CoordOf(TerrainGrid.Instance.Summoners[otherPlayer].transform);
+            //new Vector2(8, 2);
+            CoordOf(TerrainGrid.Instance.Summoners[otherPlayer].transform);
 
         Vector2 myCoord = CoordOf(transform);
 

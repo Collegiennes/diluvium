@@ -30,7 +30,7 @@ GameObject:
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Mesh
+  m_Name: SummonerSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.5, y: 1, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -55,10 +55,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_LocalRotation: {x: 0, y: 0, z: -.707106829, w: .707106829}
-  m_LocalPosition: {x: 1.5, y: 1.125, z: 3.5}
-  m_LocalScale: {x: .100000001, y: 1, z: .100000001}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalRotation: {x: 1.91251459e-07, y: -.70710665, z: .707106948, w: 1.86264515e-07}
+  m_LocalPosition: {x: 0, y: .792778015, z: 0}
+  m_LocalScale: {x: .111308433, y: .111308433, z: .222616866}
+  m_LocalEulerAnglesHint: {x: 90, y: -539.999939, z: -360}
   m_Children: []
   m_Father: {fileID: 400000}
 --- !u!23 &2300000
@@ -73,7 +73,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5a8a256a0a96440aaa0b612b84569902, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -119,6 +119,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce9d72d9173f5244dba2b26f737911cb, type: 1}
   m_Name: 
+  SpawnPoints: []
 --- !u!148 &14800000
 NetworkView:
   m_ObjectHideFlags: 1
