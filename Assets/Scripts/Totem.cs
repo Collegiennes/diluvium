@@ -23,6 +23,7 @@ public class Totem : MonoBehaviour
     public int TotemIntelligence { get; private set; }
     public int TotemMaxHealth { get; private set; }
     public float TotemCurrentHealth { get; private set; }
+    public GridCell Cell { get; private set; }
 
     public int Owner;
 
@@ -221,7 +222,7 @@ public class Totem : MonoBehaviour
         var destination = new Vector3(x + 0.5f, targetHeight, z + 0.5f);
 
         if (Network.isServer)
-            TerrainGrid.MoveTotem(origin, destination);
+            Cell = TerrainGrid.MoveTotem(origin, destination);
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {

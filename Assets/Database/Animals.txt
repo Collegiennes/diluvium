@@ -112,7 +112,6 @@ Jaguar ,Leopard,,,,,,,0
 Jay,Bird,,,,,,,0
 Jim,Human,,,,,,,0
 Kangaroo ,,38,3,2,3,3,3,11
-Kinkajou,Loris,,,,,,,0
 Kiwi,Bird,,,,,,,0
 Koala ,,39,2,1,2,1,1,5
 Komodo,Lizard,,,,,,,0
@@ -122,14 +121,12 @@ Kudu,Antelope,,,,,,,0
 Kudu ,Antelope,,,,,,,0
 Lark ,Bird,,,,,,,0
 Lemming,Groundhog,,,,,,,0
-Lemur ,Loris,,,,,,,0
 Leopard,,69,5,5,5,5,3,18
 Lion ,,40,5,5,5,3,3,16
 Lion ,Cat,,,,,,,
 Lizard,,41,1,1,1,3,2,7
 Llama ,,42,7,2,4,2,1,9
 Lobster ,Crab,,,,,,,0
-Loris ,,74,,,,,,0
 Lynx,Cat,,,,,,,0
 Lyrebird ,Bird,,,,,,,0
 Macaque,Ape,,,,,,,0
@@ -173,7 +170,6 @@ Parrot ,,51,4,2,2,4,5,13
 Partridge ,Bird,,,,,,,0
 Peafowl ,Bird,,,,,,,0
 Pelican ,Bird,,,,,,,0
-Penguin ,,75,,,,,,0
 Pig,,52,2,2,3,1,2,8
 Pigeon ,Bird,,,,,,,0
 Platypus ,,53,2,2,2,3,2,9
@@ -233,7 +229,6 @@ Wombat ,Beaver,,,,,,,0
 Woodpecker ,Bird,,,,,,,0
 Wren ,Bird,,,,,,,0
 Yak ,Bison,,,,,,,0
-<<<<<<< HEAD
 ,,,,,,,,0
 Civet,Cat,,,,,,,0
 Cuis,Mouse,,,,,,,0
@@ -277,9 +272,7 @@ Sloth,Groundhog,,,,,,,0
 Tayra,Groundhog,,,,,,,0
 Topi,Antelope,,,,,,,0
 Hog,Boar,,,,,,,0
-=======
 Zebra ,,68,7,2,2,4,2,10
->>>>>>> Animals. Yes.
 Zorilla,Skunk,,,,,,,0
 Zorro,Fox,,,,,,,0
 ,,,,,,,,0
