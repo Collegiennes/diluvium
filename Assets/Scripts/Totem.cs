@@ -27,6 +27,9 @@ public class Totem : MonoBehaviour
 
     public int Owner;
 
+    public AudioClip[] attackSounds;
+    public AudioClip summonSound;
+
     GameObject Shadow;
 
     public GameObject HurtTemplate;
@@ -54,6 +57,8 @@ public class Totem : MonoBehaviour
                                          transform.position.z);
 
         Shadow = gameObject.FindChild("Shadow");
+
+        audio.PlayOneShot(summonSound);
     }
 
     public bool IsEnemy(Totem other)
@@ -267,6 +272,8 @@ public class Totem : MonoBehaviour
         var effectIdx = adata.effectIndex - 1;
         var row = effectIdx % 4;
         var col = effectIdx / 4;
+
+        audio.PlayOneShot(attackSounds[effectIdx]);
 
         foreach (var r in hurtGo.GetComponentsInChildren<Renderer>())
             r.material.mainTextureOffset = new Vector2(row / 4f, 1 - col / 4f - 1 / 4f);

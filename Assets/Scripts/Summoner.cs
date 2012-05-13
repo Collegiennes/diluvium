@@ -17,6 +17,8 @@ public class Summoner : MonoBehaviour
     public bool HasTakenDamage { get; private set; }
     public float Health { get; private set; }
 
+    public AudioClip hurtSound;
+
     static readonly System.Random random = new System.Random();
     readonly List<int> TestList = new List<int>();
 
@@ -168,6 +170,8 @@ public class Summoner : MonoBehaviour
     {
         Health -= amount;
         if (Health < 0) Health = 0;
+
+        audio.PlayOneShot(hurtSound);
 
         HasTakenDamage = true;
         TaskManager.Instance.WaitFor(0.5f).Then(() => { HasTakenDamage = false; });

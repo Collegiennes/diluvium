@@ -8,7 +8,7 @@ public class HealthDisplay : MonoBehaviour
     public Renderer healthFullRenderer;
     public Renderer healthEmptyRenderer;
 
-    void Start()
+    void Update()
     {
         Incantation i = Incantation.Instance;
 
@@ -24,10 +24,7 @@ public class HealthDisplay : MonoBehaviour
             healthFullRenderer.material.color = i.hpEnemyGoodColor;
             healthEmptyRenderer.material.color = i.hpEnemyBadColor;
         }
-    }
 
-    void Update()
-    {
         if(totem.TotemMaxHealth == 0)
             return;
 

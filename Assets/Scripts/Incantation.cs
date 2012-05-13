@@ -18,6 +18,9 @@ public class Incantation : MonoBehaviour
 
     public Texture2D portraits;
 
+    public AudioClip mistakeSound;
+    public AudioClip enterSound;
+
     string text = "";
 
     public static Incantation Instance { get; private set; }
@@ -35,11 +38,11 @@ public class Incantation : MonoBehaviour
         GUILayout.Label(Mathf.CeilToInt(amount) + "/20", textStyle);
         GUILayout.EndHorizontal();
         GUI.color = new Color(0, 0, 0, 0.75f);
-        GUILayout.BeginHorizontal(outlineStyle, GUILayout.Height(12));
+        GUILayout.BeginHorizontal(outlineStyle);
         GUI.color = full;
-        GUILayout.Box("", boxStyle, GUILayout.Width(362*amount/20.0f));
+        GUILayout.Box("", boxStyle, GUILayout.Width(360*amount/20.0f), GUILayout.Height(10));
         GUI.color = empty;
-        GUILayout.Box("", boxStyle, GUILayout.Width(362*(1-(amount/20.0f))));
+        GUILayout.Box("", boxStyle, GUILayout.Width(360*(1-(amount/20.0f))), GUILayout.Height(10));
         GUI.color = Color.white;
         GUILayout.EndHorizontal();
     }
@@ -125,6 +128,11 @@ public class Incantation : MonoBehaviour
                 {
                     thisSummoner.HasFailed = true;
                     TaskManager.Instance.WaitFor(0.5f).Then(() => { thisSummoner.HasFailed = false; });
+                    audio.PlayOneShot(mistakeSound);
+                }
+                else if (validWords.Length > 0)
+                {
+                    audio.PlayOneShot(enterSound);
                 }
 
                 if (validWords.Length > 0)
