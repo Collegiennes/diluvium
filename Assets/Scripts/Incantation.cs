@@ -46,6 +46,8 @@ public class Incantation : MonoBehaviour
 
     void OnGUI ()
     {
+        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 400 * CameraMotion.PanFactor, 0), Quaternion.identity, Vector3.one);
+
         var textureHeight = containerStyle.normal.background.height;
 
         GUILayout.BeginArea(new Rect(0, Screen.height - textureHeight, containerStyle.normal.background.width, textureHeight), containerStyle);
@@ -83,12 +85,16 @@ public class Incantation : MonoBehaviour
         }
         GUILayout.EndArea();
 
+        GUI.matrix = Matrix4x4.TRS(new Vector3(0, -100 * CameraMotion.PanFactor, 0), Quaternion.identity, Vector3.one);
+
         GUILayout.BeginArea(new Rect(Screen.width-414+48-20, 20, 414-48, 162));
         {
             float health = enemySummoner.Health;
             ShowHealthBar(health, hpEnemyGoodColor, hpEnemyBadColor);
         }
         GUILayout.EndArea();
+
+        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 400 * CameraMotion.PanFactor, 0), Quaternion.identity, Vector3.one);
 
         //GUILayout.BeginArea(new Rect(300 - 48, Screen.height - 45, 410, 25));
         //GUILayout.BeginHorizontal(hpTextStyle);
@@ -138,5 +144,7 @@ public class Incantation : MonoBehaviour
                 text = text.Remove(text.Length-1);
             }
         }
+
+        GUI.matrix = Matrix4x4.identity;
     }
 }

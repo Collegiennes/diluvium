@@ -10030,7 +10030,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &649075302
 Transform:
   m_ObjectHideFlags: 0
@@ -15060,6 +15060,18 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 346e1f8b9dff7214dac8153a1fba3f3e, type: 2}
+      propertyPath: Credits
+      value: 
+      objectReference: {fileID: 717332032}
+    - target: {fileID: 11400000, guid: 346e1f8b9dff7214dac8153a1fba3f3e, type: 2}
+      propertyPath: Logo
+      value: 
+      objectReference: {fileID: 649075301}
+    - target: {fileID: 11400000, guid: 346e1f8b9dff7214dac8153a1fba3f3e, type: 2}
+      propertyPath: Tutorial
+      value: 
+      objectReference: {fileID: 957225351}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 346e1f8b9dff7214dac8153a1fba3f3e, type: 2}
   m_RootGameObject: {fileID: 1904772504}
@@ -27455,6 +27467,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac9f5b8b3f196984fbd8af066679508b, type: 1}
   m_Name: 
+  Credits: {fileID: 717332032}
+  Logo: {fileID: 649075301}
+  Tutorial: {fileID: 957225351}
 --- !u!1 &1904805367
 GameObject:
   m_ObjectHideFlags: 0
@@ -28740,7 +28755,7 @@ MonoBehaviour:
   outlineStyle:
     m_Name: 
     m_Normal:
-      m_Background: {fileID: 0}
+      m_Background: {fileID: 2800000, guid: 26ff611ebdbc571409852d2018412fdf, type: 1}
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Hover:
       m_Background: {fileID: 0}
@@ -28769,10 +28784,10 @@ MonoBehaviour:
       m_Top: 0
       m_Bottom: 0
     m_Padding:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
+      m_Left: 2
+      m_Right: 2
+      m_Top: 2
+      m_Bottom: 2
     m_Margin:
       m_Left: 0
       m_Right: 0
