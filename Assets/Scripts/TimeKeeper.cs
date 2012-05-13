@@ -49,7 +49,7 @@ class TimeKeeper : MonoBehaviour
         int samples = audio.timeSamples;
 
         float minutes = samples / 44100f / 60;
-        float bar = minutes * BeatsPerMinute / 4 - Totem.TransitionDuration;
+        float bar = minutes * BeatsPerMinute / 4;// - Totem.TransitionDuration;
 
         // keep only fractional part
         bar = bar - (int)bar;
