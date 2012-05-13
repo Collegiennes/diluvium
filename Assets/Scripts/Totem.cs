@@ -22,7 +22,7 @@ public class Totem : MonoBehaviour
 
     public int TotemIntelligence { get; private set; }
 
-    NetworkPlayer Owner;
+    public NetworkPlayer Owner;
 
     // server-side
     int totemSpeed;

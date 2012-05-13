@@ -15,11 +15,48 @@ public class TotemAi : MonoBehaviour
         return new Vector2(Mathf.Floor(pos.x), Mathf.Floor(pos.z));
     }
 
+    float Distance(Vector2 a, Vector2 b)
+    {
+        return Mathf.Abs(a.x-b.x) + Mathf.Abs(a.y-b.y);
+    }
+
+    float Closeness(Vector2 a, Vector2 b)
+    {
+        return 1-Mathf.Min(10, Distance(a, b))/10.0f;
+    }
+
 	void OnMyTurn(Totem totem)
     {
+        // find a target
+        Dictionary<Vector2,float> desire = new Dictionary<Vector2, float>();
+
+        NetworkPlayer otherPlayer = totem.Owner == TerrainGrid.OtherPlayer ?
+            TerrainGrid.ServerPlayer : TerrainGrid.OtherPlayer;
+        Vector2 mySummoner =
+            new Vector2(2, 2);
+            //CoordOf(TerrainGrid.Instance.Summoners[totem.Owner].transform);
+        Vector2 otherSummoner =
+            new Vector2(8, 2);
+            //CoordOf(TerrainGrid.Instance.Summoners[otherPlayer].transform);
+
+        Vector2 myCoord = CoordOf(transform);
+
+        float wantToKillSummoner = 1;
+        float wantToDefendSummoner = 1;
+        foreach(Totem t in TerrainGrid.Instance.Totems[otherPlayer])
+        {
+            desire[CoordOf(t.transform)] =
+                wantToDefendSummoner*Closeness(mySummoner, CoordOf(t.transform)) +
+                Closeness(myCoord, CoordOf(t.transform));
+        }
+        desire[otherSummoner] =
+            wantToKillSummoner * Closeness(myCoord, otherSummoner);
+
+        Vector2 target = desire.OrderBy(x => x.Value).First().Key;
+
+        // now we have a target! go there!
         float edgeNoise = Mathf.Pow(10, 5-totem.TotemIntelligence);
         Vector2 source = CoordOf(transform);
-        Vector2 target = new Vector2(8, 2);
 
         TerrainGrid grid = TerrainGrid.Instance;
         IShortestPathGraph<Vector2> graph = new DijkstraShortestPathGraph<Vector2>();
@@ -33,15 +70,31 @@ public class TotemAi : MonoBehaviour
         {
             if(i < grid.sizeX-1)
             {
-                float weight = 1+edgeNoise*Random.value;
-                graph.AddEdge(new Vector2(i, j), new Vector2(i+1, j), weight);
-                graph.AddEdge(new Vector2(i+1, j), new Vector2(i, j), weight);
+                if(Mathf.Abs(TerrainGrid.GetHeightAt(i, j) -
+                   TerrainGrid.GetHeightAt(i+1, j)) < 1.01f)
+                {
+                    Debug.DrawLine(
+                        new Vector3(i+0.5f, TerrainGrid.GetHeightAt(i, j), j+0.5f),
+                        new Vector3(i+1.5f, TerrainGrid.GetHeightAt(i+1, j), j+0.5f),
+                        Color.red, 1, false);
+                    float weight = 1+edgeNoise*Random.value;
+                    graph.AddEdge(new Vector2(i, j), new Vector2(i+1, j), weight);
+                    graph.AddEdge(new Vector2(i+1, j), new Vector2(i, j), weight);
+                }
             }
             if(j < grid.sizeZ-1)
             {
-                float weight = 1+edgeNoise*Random.value;
-                graph.AddEdge(new Vector2(i, j), new Vector2(i, j+1), weight);
-                graph.AddEdge(new Vector2(i, j+1), new Vector2(i, j), weight);
+                if(Mathf.Abs(TerrainGrid.GetHeightAt(i, j) -
+                   TerrainGrid.GetHeightAt(i, j+1)) < 1.01f)
+                {
+                    Debug.DrawLine(
+                        new Vector3(i+0.5f, TerrainGrid.GetHeightAt(i, j), j+0.5f),
+                        new Vector3(i+0.5f, TerrainGrid.GetHeightAt(i, j+1), j+1.5f),
+                        Color.red, 1, false);
+                    float weight = 1+edgeNoise*Random.value;
+                    graph.AddEdge(new Vector2(i, j), new Vector2(i, j+1), weight);
+                    graph.AddEdge(new Vector2(i, j+1), new Vector2(i, j), weight);
+                }
             }
         }
 
@@ -49,8 +102,15 @@ public class TotemAi : MonoBehaviour
         if(path == null)
             return;
 
-        Vector2 direction = path[1] - path[0];
-        networkView.RPC("MoveTo", RPCMode.All,
-            new Vector3(direction.x, 0, direction.y));
+        if(path.Count > 2)
+        {
+            Vector2 direction = path[1] - path[0];
+            networkView.RPC("MoveTo", RPCMode.All,
+                new Vector3(direction.x, 0, direction.y));
+        }
+        else
+        {
+            // ATTACK!
+        }
 	}
 }
