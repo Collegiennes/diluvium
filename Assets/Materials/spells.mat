@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: tiles
-  m_Shader: {fileID: 6, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: spells
+  m_Shader: {fileID: 200, guid: 0000000000000000e000000000000000, type: 0}
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -15,14 +15,14 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: dd4e12f8c94b74b48b9030bfce6bdac5, type: 1}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
+          m_Texture: {fileID: 2800000, guid: a2d1790d6a70f4119be3c0b8db2b2cb6, type: 1}
+          m_Scale: {x: .25, y: .25}
+          m_Offset: {x: 0, y: .5}
     m_Floats:
       data:
         first:
-          name: _Shininess
-        second: .699999988
+          name: _InvFade
+        second: 1
     m_Colors:
       data:
         first:
@@ -30,9 +30,5 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _SpecColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _Emission
-        second: {r: .283582091, g: .283582091, b: .283582091, a: 0}
+          name: _TintColor
+        second: {r: .501960814, g: .501960814, b: .501960814, a: .501960814}

@@ -27,6 +27,8 @@ public class Totem : MonoBehaviour
 
     GameObject Shadow;
 
+    public GameObject HurtTemplate;
+
     // server-side
     int totemSpeed;
     int moveTimeBuffer;
@@ -209,7 +211,25 @@ public class Totem : MonoBehaviour
         var enemyGo = TerrainGrid.Instance.Cells[x, z].Occupant;
 
         // TODO : remove HP from enemy
-        // TODO : spawn effect(s)
+
+        var hurtGo = Instantiate(HurtTemplate, transform.position + origin + direction - Camera.main.transform.forward * 10, Quaternion.identity) as GameObject;
+
+        TaskManager.Instance.WaitUntil(elapsedTime =>
+        {
+            var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
+            var easedStep = Easing.EaseIn(step, EasingType.Quadratic);
+
+            foreach (var r in hurtGo.GetComponentsInChildren<Renderer>())
+            {
+                var c = r.material.GetColor("_TintColor");
+                r.material.SetColor("_TintColor", new Color(c.r, c.g, c.b, 1 - step));
+            }
+
+            if (step >= 1)
+                Destroy(hurtGo);
+
+            return step >= 1;
+        });
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {

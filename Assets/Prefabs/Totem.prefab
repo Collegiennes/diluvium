@@ -475,6 +475,8 @@ MonoBehaviour:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+  Owner: 0
+  HurtTemplate: {fileID: 100002, guid: 7e10f88f8fa3b4744a52e10ffccef91f, type: 2}
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
