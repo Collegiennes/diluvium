@@ -46,6 +46,12 @@ public class Incantation : MonoBehaviour
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
 
+        //GUILayout.BeginArea(new Rect(300 - 48, Screen.height - 45, 410, 25));
+        //GUILayout.BeginHorizontal(hpTextStyle);
+
+        //GUILayout.EndHorizontal();
+        //GUILayout.EndArea();
+
         // idle : 2/3f
         // hurt : 0/3f
         // fail : 1/3f

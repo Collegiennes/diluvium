@@ -29,15 +29,11 @@ public class Summoner : MonoBehaviour
     {
         TestList.Clear();
         TestList.Add(0); TestList.Add(1); TestList.Add(2);
-        //Debug.Log(SpawnPoints.Length + " spawn points");
 
         while (TestList.Count > 0)
         {
             var i = random.Next(0, TestList.Count);
-            //Debug.Log("i = " + i);
-            //Debug.Log("t[i] = " + TestList[i]);
-            //Debug.Log("sp[t[i]] = " + SpawnPoints[TestList[i]]);
-            var sp = SpawnPoints[i];
+            var sp = SpawnPoints[TestList[i]];
             TestList.RemoveAt(i);
 
             var x = (int) Math.Floor(sp.transform.position.x);
@@ -46,10 +42,25 @@ public class Summoner : MonoBehaviour
             if (TerrainGrid.IsWalkable(x, z))
             {
                 sp.SpawnTotemOnServer(Network.isServer ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId, validWords);
-                //Debug.Log("");
                 return;
             }
-            //Debug.Log("OCCUPIED -- " + TestList.Count + " remaining...");
+        }
+
+        TestList.Add(3); TestList.Add(4); 
+        while (TestList.Count > 0)
+        {
+            var i = random.Next(0, TestList.Count);
+            var sp = SpawnPoints[TestList[i]];
+            TestList.RemoveAt(i);
+
+            var x = (int)Math.Floor(sp.transform.position.x);
+            var z = (int)Math.Floor(sp.transform.position.z);
+
+            if (TerrainGrid.IsWalkable(x, z))
+            {
+                sp.SpawnTotemOnServer(Network.isServer ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId, validWords);
+                return;
+            }
         }
 
         Debug.Log("No more space to spawn!");
