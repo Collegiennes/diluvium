@@ -72,7 +72,13 @@ public class TotemAi : MonoBehaviour
             if(i < grid.sizeX-1)
             {
                 if(Mathf.Abs(TerrainGrid.GetHeightAt(i, j) -
-                   TerrainGrid.GetHeightAt(i+1, j)) < 1.01f)
+                   TerrainGrid.GetHeightAt(i+1, j)) < 1.01f
+                   && (TerrainGrid.IsWalkable(i, j) ||
+                       source == new Vector2(i, j) ||
+                       target == new Vector2(i, j))
+                   && (TerrainGrid.IsWalkable(i+1, j) ||
+                       source == new Vector2(i+1, j) ||
+                       target == new Vector2(i+1, j)))
                 {
                     Debug.DrawLine(
                         new Vector3(i+0.5f, TerrainGrid.GetHeightAt(i, j), j+0.5f),
@@ -86,7 +92,13 @@ public class TotemAi : MonoBehaviour
             if(j < grid.sizeZ-1)
             {
                 if(Mathf.Abs(TerrainGrid.GetHeightAt(i, j) -
-                   TerrainGrid.GetHeightAt(i, j+1)) < 1.01f)
+                   TerrainGrid.GetHeightAt(i, j+1)) < 1.01f
+                   && (TerrainGrid.IsWalkable(i, j) ||
+                       source == new Vector2(i, j) ||
+                       target == new Vector2(i, j))
+                   && (TerrainGrid.IsWalkable(i, j+1) ||
+                       source == new Vector2(i, j+1) ||
+                       target == new Vector2(i, j+1)))
                 {
                     Debug.DrawLine(
                         new Vector3(i+0.5f, TerrainGrid.GetHeightAt(i, j), j+0.5f),
