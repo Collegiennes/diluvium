@@ -1,93 +1,150 @@
 Name,Parent,Summons.psd,Spells.psd,ATK,HPS,SPD,INT,0
+Anteater ,,1,2,2,3,2,3,10
+Antelope ,,2,7,2,2,5,2,11
+Ape ,,3,2,4,3,3,5,15
+Armadillo ,,4,8,2,3,2,3,10
+Caribou ,,5,7,5,4,3,2,14
+Badger ,,6,1,2,4,4,3,13
+Bat ,,7,6,5,2,5,2,14
+Bear ,,8,5,4,4,2,3,13
+Beaver ,,9,2,2,4,4,3,13
+Bird,,10,6,3,1,4,4,12
+Bison ,,11,3,5,4,2,2,13
+Boar ,,12,3,4,4,4,3,15
+Camel ,,13,7,2,3,3,2,10
+Capybara,,14,2,2,2,3,3,
+Ass,,15,7,2,4,1,1,8
+Cat ,,16,1,1,1,4,4,10
+Chameleon,,17,2,1,1,2,2,6
+Chicken ,,18,6,1,2,2,1,6
+Chinchilla ,,19,1,1,1,3,3,8
+Crab ,,20,6,4,1,2,1,8
+Crow ,,21,6,4,2,4,4,14
+Deer ,,22,7,4,2,4,3,13
+Dog ,,23,5,2,2,3,4,11
+Duck,,24,6,2,2,3,2,9
+Elephant ,,25,3,4,5,2,4,15
+Ferret ,,26,1,2,2,3,3,10
+Fox ,,27,5,3,2,3,4,12
+Frog ,,28,8,1,1,2,1,5
+Giraffe ,,29,7,2,3,2,3,10
+Goat ,,30,2,3,3,2,2,10
+Gorilla ,,31,3,4,4,2,5,15
+Groundhog,,32,2,2,2,3,2,9
+Hedgehog ,,33,2,5,2,3,3,13
+Hippo,,34,3,3,5,2,2,12
+Horse,,35,7,3,4,4,4,15
+Human ,,36,2,1,1,1,3,6
+Hyena ,,37,5,4,3,3,3,13
+Kangaroo ,,38,3,2,3,3,3,11
+Koala ,,39,2,1,2,1,1,5
+Lion ,,40,5,5,5,3,3,16
+Lizard,,41,1,1,1,3,2,7
+Llama ,,42,7,2,4,2,1,9
+Manatee ,,43,4,2,4,2,4,12
+Mole ,,44,2,2,3,4,2,11
+Panther,,45,5,5,5,4,2,16
+Mouse ,,46,2,1,1,4,3,9
+Octopus ,,47,5,5,3,3,4,15
+Ostrich ,,48,5,2,2,2,2,8
+Otter ,,49,2,2,3,3,3,11
+Owl ,,50,6,3,2,4,3,12
+Parrot ,,51,4,2,2,4,5,13
+Pig,,52,2,2,3,1,2,8
+Platypus ,,53,2,2,2,3,2,9
+Ponycorn,,54,4,5,5,5,5,20
+Rabbit ,,55,5,1,1,4,2,8
+Raccoon ,,56,1,2,2,3,3,10
+Ram ,,57,3,5,5,3,2,15
+Rat ,,58,2,2,1,3,3,9
+Rhinoceros ,,59,3,5,5,3,2,15
+Sheep ,,60,8,3,2,2,1,8
+Skunk ,,61,1,2,2,2,2,8
+Snake ,,62,4,2,1,3,2,8
+Squirrel ,,63,2,2,1,3,3,9
+Tiger ,,64,1,5,4,4,4,17
+Turtle ,,65,4,4,3,1,3,11
+Walrus ,,66,3,3,4,2,3,12
+Wolf ,,67,5,4,3,4,4,15
+Zebra ,,68,7,2,2,4,2,10
+Leopard,,69,5,5,5,5,3,18
+Ox,,70,7,3,5,2,2,12
+Cow,,71,3,1,6,2,2,11
+Crocodile ,,72,5,6,4,4,3,17
+Pole,,73,9,0,1,5,5,11
+Loris ,,74,2,2,1,3,3,9
+Penguin ,,75,6,1,1,1,2,5
+Tim,,76,8,1,1,2,5,9
+Meatboy,,77,8,1,1,5,2,9
+Gomez,,78,8,1,1,1,5,8
+Pikachu,,79,4,5,2,3,4,14
+Spelunky,,80,8,2,1,4,3,10
+Totoro,,81,8,2,4,1,2,9
+Cube,,82,2,0,3,1,3,7
+Moogle,,83,1,1,1,3,3,8
+Prince,,84,8,1,1,4,1,7
+Panda,,85,3,2,3,2,2,
+Eagle ,,86,6,3,2,4,3,12
+Okapi,,87,7,2,2,4,2,10
+Mameshiba,,88,8,0,1,1,4,6
 Aardvark,Armadillo,,,,,,,
 Aardwolf,Wolf,,,,,,,0
 Albatross ,Bird,,,,,,,0
 Alligator ,Crocodile,,,,,,,0
 Alpaca ,Llama,,,,,,,0
 Anaconda,Snake,,,,,,,0
-Anteater ,,1,2,2,3,2,3,10
-Antelope ,,2,7,2,2,5,2,11
-Ape ,,3,2,4,3,3,5,15
 Argalis,Ram,,,,,,,0
-Armadillo ,,4,8,2,3,2,3,10
-Ass,,15,7,2,4,1,1,8
 Baboon ,Ape,,,,,,,0
-Badger ,,6,1,2,4,4,3,13
 Bandicoot,Mouse,,,,,,,0
-Bat ,,7,6,5,2,5,2,14
-Bear ,,8,5,4,4,2,3,13
-Beaver ,,9,2,2,4,4,3,13
 Bighorn,Ram,,,,,,,0
-Bird,,10,6,3,1,4,4,12
-Bison ,,11,3,5,4,2,2,13
 Boa,Snake,,,,,,,0
-Boar ,,12,3,4,4,4,3,15
 Bobcat,Cat,,,,,,,
+Braid,Tim,,,,,,,0
 Buffalo ,Bison,,,,,,,0
 Caiman,Crocodile,,,,,,,
-Camel ,,13,7,2,3,3,2,10
 Capuchin,Ape,,,,,,,0
-Capybara,,14,2,2,2,3,3,
 Caracal,Cat,,,,,,,0
 Carcajou,Otter,,,,,,,0
-Caribou ,,5,7,5,4,3,2,14
-Cat ,,16,1,1,1,4,4,10
-Chameleon,,17,2,1,1,2,2,6
 Chamois ,Goat,,,,,,,0
 Cheetah ,Leopard,,,,,,,0
-Chicken ,,18,6,1,2,2,1,6
 Chimpanzee ,Ape,,,,,,,0
-Chinchilla ,,19,1,1,1,3,3,8
 Chipmunk,Squirrel,,,,,,,0
 Civet,Cat,,,,,,,0
 Cobra ,Snake,,,,,,,0
 Colobus,Ape,,,,,,,0
 Cormorant ,Crow,,,,,,,0
 Cougar,Panther,,,,,,,0
-Cow,,71,3,1,6,2,2,11
 Coyote ,Fox,,,,,,,0
-Crab ,,20,6,4,1,2,1,8
 Crane ,Bird,,,,,,,0
-Crocodile ,,72,5,6,4,4,3,17
-Crow ,,21,6,4,2,4,4,14
-Cuis,Mouse,,,,,,,0
-Deer ,,22,7,4,2,4,3,13
+Cucco,Chicken,,,,,,,0
+Cuis,Rat,,,,,,,0
+Cuttlefish,Octopus,,,,,,,
 Dhole,Fox,,,,,,,
-Dog ,,23,5,2,2,3,4,11
+Dinosaur,Crocodile,,,,,,,0
 Donkey ,Horse,,,,,,,0
 Dove ,Bird,,,,,,,0
 Dragon,Lizard,,,,,,,0
-Duck,,24,6,2,2,3,2,9
-Eagle ,Bird,,,,,,,0
 Echidna ,Hedgehog,,,,,,,0
 Eland ,Antelope,,,,,,,0
-Elephant ,,25,3,4,5,2,4,15
 Elk,Deer,,,,,,,0
 Emu ,Ostrich,,,,,,,0
 Falcon ,Eagle,,,,,,,0
-Ferret ,,26,1,2,2,3,3,10
+Fez,Gomez,,,,,,,0
 Finch ,Bird,,,,,,,0
 Flamingo,Parrot,,,,,,,0
 Fowl,Chicken,,,,,,,0
-Fox ,,27,5,3,2,3,4,12
-Frog ,,28,8,1,1,2,1,5
 Gaur ,Ox,,,,,,,0
 Gazelle,Antelope,,,,,,,0
-Gazelle ,Antelope,,,,,,,
 Gazer,Crocodile,,,,,,,0
 Gecko,Lizard,,,,,,,0
 Gemsbok,Antelope,,,,,,,0
 Gerbil ,Mouse,,,,,,,0
-Giraffe ,,29,7,2,3,2,3,10
 Glider,Rat,,,,,,,0
 Glutton,Otter,,,,,,,0
 Gnu ,Cow,,,,,,,0
-Goat ,,30,2,3,3,2,2,10
 Goose ,Bird,,,,,,,0
 Gopher,Groundhog,,,,,,,0
-Gorilla ,,31,3,4,4,2,5,15
 Grizzly,Bear,,,,,,,0
-Groundhog,,32,2,2,2,3,2,9
 Grouse ,Chicken,,,,,,,0
 Guanaco,Llama,,,,,,,0
 Guanaco ,Llama,,,,,,,0
@@ -95,15 +152,10 @@ Gull ,Bird,,,,,,,0
 Hamster ,Mouse,,,,,,,0
 Hare ,Rabbit,,,,,,,0
 Hawk ,Eagle,,,,,,,0
-Hedgehog ,,33,2,5,2,3,3,13
 Heron ,Bird,,,,,,,0
-Hippo,,34,3,3,5,2,2,12
 Hippopotamus,Hippo,,,,,,,0
 Hog,Boar,,,,,,,0
-Horse,,35,7,3,4,4,4,15
-Human ,,36,2,1,1,1,1,4
 Hummingbird ,Bird,,,,,,,0
-Hyena ,,37,5,4,3,3,3,13
 Hyrax,Groundhog,,,,,,,0
 Iguana ,Lizard,,,,,,,0
 Jackal ,Fox,,,,,,,0
@@ -111,41 +163,34 @@ Jackrabbit,Rabbit,,,,,,,0
 Jaguar ,Leopard,,,,,,,0
 Jay,Bird,,,,,,,0
 Jim,Human,,,,,,,0
-Kangaroo ,,38,3,2,3,3,3,11
+Katamari,Prince,,,,,,,0
+Kinkajou,Loris,,,,,,,0
 Kiwi,Bird,,,,,,,0
-Koala ,,39,2,1,2,1,1,5
 Komodo,Lizard,,,,,,,0
 Kongoni,Antelope,,,,,,,0
 Kouprey ,Ox,,,,,,,0
 Kudu,Antelope,,,,,,,0
-Kudu ,Antelope,,,,,,,0
 Lark ,Bird,,,,,,,0
 Lemming,Groundhog,,,,,,,0
-Leopard,,69,5,5,5,5,3,18
-Lion ,,40,5,5,5,3,3,16
+Lemur ,Loris,,,,,,,0
 Lion ,Cat,,,,,,,
-Lizard,,41,1,1,1,3,2,7
-Llama ,,42,7,2,4,2,1,9
 Lobster ,Crab,,,,,,,0
 Lynx,Cat,,,,,,,0
 Lyrebird ,Bird,,,,,,,0
 Macaque,Ape,,,,,,,0
 Magpie ,Bird,,,,,,,0
-Mallard,Duck,,,,,,,0
 Mallard ,Duck,,,,,,,0
 Man,Human,,,,,,,0
-Manatee ,,43,4,2,4,2,4,12
 Mandrill,Ape,,,,,,,0
 Marten,Mouse,,,,,,,0
+Meat,Meatboy,,,,,,,0
 Meerkat ,Groundhog,,,,,,,0
 Mink ,Otter,,,,,,,0
-Mole ,,44,2,2,3,4,2,11
 Mongoose,Rat,,,,,,,0
 Monkey ,Ape,,,,,,,0
 Moose ,Caribou,,,,,,,0
 Mouflon,Ram,,,,,,,0
-Mouse ,,46,2,1,1,3,3,8
-Mule,Goat,,,,,,,0
+Mule,Horse,,,,,,,0
 Mule ,Horse,,,,,,,0
 Newt ,Lizard,,,,,,,0
 Nightingale ,Bird,,,,,,,0
@@ -153,145 +198,62 @@ Nilgai,Deer,,,,,,,0
 Numbat,Aardvark,,,,,,,0
 Nyala,Antelope,,,,,,,0
 Ocelot,Leopard,,,,,,,0
-Octopus ,,47,5,5,3,4,4,16
 Opossum ,Mouse,,,,,,,0
 Orangutan,Ape,,,,,,,
 Oribi,Antelope,,,,,,,0
 Oryx ,Antelope,,,,,,,0
-Ostrich ,,48,5,2,2,2,2,8
-Otter ,,49,2,2,3,3,3,11
-Owl ,,50,6,4,3,4,4,15
-Ox,,70,7,3,5,2,2,12
 Paca,Capybara,,,,,,,0
 Pangolin,Armadillo,,,,,,,0
-Panther,,45,5,5,5,4,2,16
 Parakeet,Parrot,,,,,,,0
-Parrot ,,51,4,2,2,4,5,13
 Partridge ,Bird,,,,,,,0
 Peafowl ,Bird,,,,,,,0
 Pelican ,Bird,,,,,,,0
-Pig,,52,2,2,3,1,2,8
 Pigeon ,Bird,,,,,,,0
-Platypus ,,53,2,2,2,3,2,9
-Pole,,73,9,0,1,5,5,11
+Pluriel,Rabbit,,,,,,,0
 Pony ,Horse,,,,,,,0
-Ponycorn,,54,4,5,5,5,5,20
 Porcupine ,Hedgehog,,,,,,,0
-Possum,Fox,,,,,,,0
+Possum,Skunk,,,,,,,0
 Potoroo,Rat,,,,,,,0
 Puku,Antelope,,,,,,,0
 Python,Snake,,,,,,,0
 Quelea ,Bird,,,,,,,0
-Rabbit ,,55,5,2,1,4,2,9
-Raccoon ,,56,1,2,2,3,3,10
 Rail ,Bird,,,,,,,0
-Ram ,,57,3,5,5,3,2,15
-Rat ,,58,2,2,1,3,3,9
 Rattlesnake,Snake,,,,,,,0
 Raven ,Crow,,,,,,,0
 Reindeer,Deer,,,,,,,0
 Rhino,Rhinoceros,,,,,,,0
-Rhinoceros ,,59,3,5,5,3,2,15
 Roadrunner,Bird,,,,,,,
 Rook ,Bird,,,,,,,0
 Salamander ,Lizard,,,,,,,0
 Seal ,Otter,,,,,,,0
 Sealion,Otter,,,,,,,0
 Serval,Leopard,,,,,,,0
-Sheep ,,60,8,3,2,2,1,8
 Shrew ,Rat,,,,,,,0
-Skunk ,,61,1,2,2,2,2,8
-Sloth,Groundhog,,,,,,,0
-Snake ,,62,4,2,1,3,2,8
+Sloth,Koala,,,,,,,0
 Squid ,Octopus,,,,,,,0
-Squirrel ,,63,2,2,1,3,3,9
 Swallow ,Bird,,,,,,,0
 Swan ,Bird,,,,,,,0
 Swan ,Bird,,,,,,,0
 Tapir ,Capybara,,,,,,,0
 Tarsier ,Raccoon,,,,,,,0
 Tayra,Groundhog,,,,,,,0
-Tiger ,,64,1,5,4,4,4,17
 Toad ,Frog,,,,,,,0
 Topi,Antelope,,,,,,,0
 Tortoise,Turtle,,,,,,,0
 Toucan,Parrot,,,,,,,0
 Turkey ,Chicken,,,,,,,0
-Turtle ,,65,4,4,3,1,3,11
 Vulture,Chicken,,,,,,,0
 Wallaby ,Kangaroo,,,,,,,0
-Walrus ,,66,3,3,4,2,3,12
 Wapiti,Deer,,,,,,,0
 Weasel ,Mouse,,,,,,,0
-Wolf ,,67,5,4,3,4,4,15
 Wolverine,Otter,,,,,,,0
 Wombat ,Beaver,,,,,,,0
 Woodpecker ,Bird,,,,,,,0
 Wren ,Bird,,,,,,,0
 Yak ,Bison,,,,,,,0
-,,,,,,,,0
-Civet,Cat,,,,,,,0
-Cuis,Mouse,,,,,,,0
-Dragon,Lizard,,,,,,,0
-Rattlesnake,Snake,,,,,,,0
-Flamingo,Parrot,,,,,,,0
-Glider,Rat,,,,,,,0
-Fowl,Chicken,,,,,,,0
-Gemsbok,Antelope,,,,,,,0
-Gazer,Crocodile,,,,,,,0
-Vulture,Chicken,,,,,,,0
-Colobus,Ape,,,,,,,0
-Guanaco,Llama,,,,,,,0
-Hyrax,Groundhog,,,,,,,0
-Cougar,Panther,,,,,,,0
-Jackrabbit,Rabbit,,,,,,,0
-Macaque,Ape,,,,,,,0
-Jim,Human,,,,,,,0
-Man,Human,,,,,,,0
-Kongoni,Antelope,,,,,,,0
-Kudu,Antelope,,,,,,,0
-Lynx,Cat,,,,,,,0
-Mallard,Duck,,,,,,,0
-Mule,Goat,,,,,,,0
-Ocelot,Leopard,,,,,,,0
-Mouflon,Ram,,,,,,,0
-Nilgai,Deer,,,,,,,0
-Numbat,Aardvark,,,,,,,0
-Nyala,Antelope,,,,,,,0
-Gazelle,Antelope,,,,,,,0
-Oribi,Antelope,,,,,,,0
-Toucan,Parrot,,,,,,,0
-Possum,Fox,,,,,,,0
-Python,Snake,,,,,,,0
-Paca,Capybara,,,,,,,0
-Parakeet,Parrot,,,,,,,0
-Potoroo,Rat,,,,,,,0
-Puku,Antelope,,,,,,,0
-Bighorn,Ram,,,,,,,0
-Sloth,Groundhog,,,,,,,0
-Tayra,Groundhog,,,,,,,0
-Topi,Antelope,,,,,,,0
-Hog,Boar,,,,,,,0
-Zebra ,,68,7,2,2,4,2,10
 Zorilla,Skunk,,,,,,,0
 Zorro,Fox,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
+,,,,,,,,
 ,,,,,,,,0
 ,,,,,,,,0
 ,,,,,,,,0
