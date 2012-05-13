@@ -182,6 +182,20 @@ public class Totem : MonoBehaviour
                             Network.Destroy(enemyGo);
                         }
                     }
+
+                    if (enemyGo != null && enemyGo.GetComponent<Summoner>() != null && enemyGo.GetComponent<Summoner>().Health > 0)
+                    {
+                        attackTimeBuffers[animalId] = 0;
+                        networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value);
+
+                        var damage = AnimalData[animalId].attack / 2f;
+                        enemyGo.networkView.RPC("Hurt", RPCMode.Others, damage);
+                        enemyGo.GetComponent<Summoner>().Hurt(damage);
+                        if (enemyGo.GetComponent<Summoner>().Health <= 0)
+                        {
+                            // TODO : Summoner death
+                        }
+                    }
                 }
             }
         }

@@ -102,4 +102,11 @@ public class Summoner : MonoBehaviour
 
         Debug.Log("No more space to spawn!");
     }
+
+    [RPC]
+    public void Hurt(float amount)
+    {
+        Health -= amount;
+        if (Health < 0) Health = 0;
+    }
 }
