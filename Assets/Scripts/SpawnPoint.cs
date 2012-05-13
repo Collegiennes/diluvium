@@ -13,7 +13,10 @@ public class SpawnPoint : MonoBehaviour
                        animalNames.Length > 1 ? animalNames[1] : null,
                        animalNames.Length > 2 ? animalNames[2] : null);
         else
-            networkView.RPC("SpawnTotem", RPCMode.Server, playerId, animalNames);
+            networkView.RPC("SpawnTotem", RPCMode.Server, playerId,
+               animalNames[0], 
+               animalNames.Length > 1 ? animalNames[1] : "",
+               animalNames.Length > 2 ? animalNames[2] : "");
     }
 
     [RPC]
