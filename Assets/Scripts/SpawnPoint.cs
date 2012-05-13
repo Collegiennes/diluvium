@@ -22,8 +22,6 @@ public class SpawnPoint : MonoBehaviour
         if (!Network.isServer)
             throw new InvalidOperationException("Spawning only allowed on the server!");
 
-        // TODO : validate that the spawning cell is not occupied
-
         var totemGo = Network.Instantiate(TotemPrefab, transform.position, Quaternion.identity, 0) as Totem;
 
         totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName1);

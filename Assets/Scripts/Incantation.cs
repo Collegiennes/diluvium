@@ -68,11 +68,9 @@ public class Incantation : MonoBehaviour
                 if (validWords.Length > 0)
                 {
                     if (Network.isServer)
-                        TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].SpawnPoints[Random.Range(0, 3)].
-                            SpawnTotemOnServer(TerrainGrid.ServerPlayerId, validWords);
+                        TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].TrySpawn(validWords);
                     else
-                        TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].SpawnPoints[Random.Range(0, 3)].
-                            SpawnTotemOnServer(TerrainGrid.ClientPlayerId, validWords);
+                        TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].TrySpawn(validWords);
                 }
 
                 //foreach(string word in words)

@@ -13,7 +13,7 @@ public class WeatherRain : MonoBehaviour {
 	}
     void Update() {
 	
-        float offset = Mathf.Floor((Time.time * 8)) * (0.25F * randoom);
+        float offset = Mathf.Floor((Time.time * 6)) * (0.25F * randoom);
 
         renderer.material.mainTextureOffset = new Vector2(0, offset);
 
