@@ -9,7 +9,7 @@ public class HealthDisplay : MonoBehaviour
     void Update()
     {
         float scale = pivot.localScale.x;
-        float t = Mathf.Pow(0.05f, Time.deltaTime);
+        float t = Mathf.Pow(0.01f, Time.deltaTime);
         scale = scale * t +
             (float)totem.TotemCurrentHealth/totem.TotemMaxHealth*(1-t);
         pivot.localScale = new Vector3(scale, 1, 1);

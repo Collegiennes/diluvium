@@ -29,6 +29,8 @@ public class Totem : MonoBehaviour
     GameObject Shadow;
 
     public GameObject HurtTemplate;
+    public DamageNumber NumberTemplate;
+
     bool disposed;
 
     // server-side
@@ -162,15 +164,15 @@ public class Totem : MonoBehaviour
 
                 if (doAttack)
                 {
-                    attackTimeBuffers[animalId] = 0;
-                    networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value);
-
                     var x = (int)Math.Floor(transform.position.x + attackDirection.Value.x);
                     var z = (int)Math.Floor(transform.position.z + attackDirection.Value.z);
                     var enemyGo = TerrainGrid.Instance.Cells[x, z].Occupant;
 
                     if (enemyGo != null && enemyGo.GetComponent<Totem>() != null && enemyGo.GetComponent<Totem>().TotemCurrentHealth > 0)
                     {
+                        attackTimeBuffers[animalId] = 0;
+                        networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value);
+
                         var damage = AnimalData[animalId].attack / 2f;
                         enemyGo.networkView.RPC("Hurt", RPCMode.Others, damage);
                         enemyGo.GetComponent<Totem>().Hurt(damage);
@@ -248,6 +250,9 @@ public class Totem : MonoBehaviour
 
         foreach (var r in hurtGo.GetComponentsInChildren<Renderer>())
             r.material.mainTextureOffset = new Vector2(row / 4f, 1 - col / 4f - 1 / 4f);
+
+        var go = Instantiate(NumberTemplate, transform.position + origin + direction, Quaternion.identity) as DamageNumber;
+        go.Amount = (float)Math.Round((adata.attack * 10) * (Random.value * 0.2f + 1 - 0.1f));
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
