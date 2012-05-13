@@ -64,21 +64,19 @@ public class Incantation : MonoBehaviour
                 GUILayout.Label("|", textStyle);
         }
 
-        GUILayout.EndHorizontal();
+        var thisSummoner = TerrainGrid.Instance.Summoners[Network.isServer ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId];
+        var enemySummoner = TerrainGrid.Instance.Summoners[Network.isServer ? TerrainGrid.ClientPlayerId : TerrainGrid.ServerPlayerId];
 
+        GUILayout.EndHorizontal();
         {
-            int playerId = Network.isServer ?
-                TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId;
-            float health = TerrainGrid.Instance.Summoners[playerId].Health;
+            float health = thisSummoner.Health;
             ShowHealthBar(health, hpGoodColor, hpBadColor);
         }
         GUILayout.EndArea();
 
         GUILayout.BeginArea(new Rect(Screen.width-414+48-20, 20, 414-48, 162));
         {
-            int playerId = !Network.isServer ?
-                TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId;
-            float health = TerrainGrid.Instance.Summoners[playerId].Health;
+            float health = enemySummoner.Health;
             ShowHealthBar(health, hpEnemyGoodColor, hpEnemyBadColor);
         }
         GUILayout.EndArea();
@@ -93,7 +91,7 @@ public class Incantation : MonoBehaviour
         // hurt : 0/3f
         // fail : 1/3f
 
-        var offset = 2 / 3f;
+        var offset = thisSummoner.HasTakenDamage ? 0 : thisSummoner.HasFailed ? 1 / 3f : 2 / 3f;
 
         GUI.DrawTextureWithTexCoords(new Rect(0, Screen.height - portraits.height, 512, portraits.height),
                                      portraits, new Rect(offset, 0, 1 / 3f, 1));
@@ -108,13 +106,14 @@ public class Incantation : MonoBehaviour
             {
                 var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToArray();
 
-                if (validWords.Length > 0)
+                if (words.Length != validWords.Length)
                 {
-                    if (Network.isServer)
-                        TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].TrySpawn(validWords);
-                    else
-                        TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].TrySpawn(validWords);
+                    thisSummoner.HasFailed = true;
+                    TaskManager.Instance.WaitFor(0.5f).Then(() => { thisSummoner.HasFailed = false; });
                 }
+
+                if (validWords.Length > 0)
+                    thisSummoner.TrySpawn(validWords);
 
                 //foreach(string word in words)
                 //{

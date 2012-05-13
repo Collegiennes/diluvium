@@ -12,6 +12,8 @@ public class Summoner : MonoBehaviour
     public bool IsServerSummoner;
     public bool IsFakeAI;
 
+    public bool HasFailed { get; set; }
+    public bool HasTakenDamage { get; private set; }
     public float Health { get; private set; }
 
     System.Random random = new System.Random();
@@ -147,5 +149,8 @@ public class Summoner : MonoBehaviour
     {
         Health -= amount;
         if (Health < 0) Health = 0;
+
+        HasTakenDamage = true;
+        TaskManager.Instance.WaitFor(0.5f).Then(() => { HasTakenDamage = false; });
     }
 }
