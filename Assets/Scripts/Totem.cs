@@ -8,7 +8,7 @@ public class Totem : MonoBehaviour
 {
     public const float MaxJumpHeight = 2.5f;
 
-    public const float TransitionDuration = 0.15f;
+    public const float TransitionDuration = 0.4f;
     public AnimationCurve JumpHeightCurve;
     public AnimationCurve JumpTimeCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
@@ -23,6 +23,8 @@ public class Totem : MonoBehaviour
     public int TotemIntelligence { get; private set; }
 
     public NetworkPlayer Owner;
+
+    GameObject Shadow;
 
     // server-side
     int totemSpeed;
@@ -41,6 +43,8 @@ public class Totem : MonoBehaviour
         transform.position = new Vector3(transform.position.x, 
                                          TerrainGrid.GetHeightAt(transform.position),
                                          transform.position.z);
+
+        Shadow = gameObject.FindChild("Shadow");
     }
 
     public bool IsEnemy(Totem other)
@@ -84,6 +88,17 @@ public class Totem : MonoBehaviour
 
         if (Network.isServer)
             attackTimeBuffers.Add(0);
+    }
+
+    void Update()
+    {
+        var heightAt = TerrainGrid.GetHeightAt(transform.position);
+        var distance = transform.position.y - heightAt;
+
+        Shadow.transform.localPosition = new Vector3(0, -distance, 0);
+
+        var scaleFactor = Mathf.Clamp(1 - distance / 3, 0.1f, 1);
+        Shadow.transform.localScale = new Vector3(scaleFactor, 1, scaleFactor);
     }
 
     void OnDestroy()
