@@ -36,7 +36,7 @@ public class TerrainGrid : MonoBehaviour
                Instance.Cells[x, z].Occupant == null;
     }
 
-    public static void RegisterTotem(int playerId, Totem totem)
+    public static GridCell RegisterTotem(int playerId, Totem totem)
     {
         var x = (int) Math.Floor(totem.transform.position.x);
         var z = (int) Math.Floor(totem.transform.position.z);
@@ -47,6 +47,7 @@ public class TerrainGrid : MonoBehaviour
 
         gridCell.Occupant = totem.gameObject;
         Instance.Totems[playerId].Add(totem);
+        return gridCell;
     }
     public static GridCell MoveTotem(Vector3 oldPosition, Vector3 newPosition)
     {

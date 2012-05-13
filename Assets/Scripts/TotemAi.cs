@@ -9,9 +9,14 @@ public class TotemAi : MonoBehaviour
         GetComponent<Totem>().MyTurn += OnMyTurn;
     }
 
-    Vector2 CoordOf(Transform t)
+    Vector2 CoordOf(Totem totem)
     {
-        Vector3 pos = t.localPosition;
+        return new Vector2(totem.Cell.X, totem.Cell.Z);
+    }
+
+    Vector2 CoordOf(Summoner summoner)
+    {
+        Vector3 pos = summoner.transform.localPosition;
         return new Vector2(Mathf.Floor(pos.x), Mathf.Floor(pos.z));
     }
 
@@ -33,19 +38,19 @@ public class TotemAi : MonoBehaviour
         int otherPlayer = totem.Owner == TerrainGrid.ServerPlayerId ?
             TerrainGrid.ClientPlayerId : TerrainGrid.ServerPlayerId;
 
-        Vector2 mySummoner = CoordOf(TerrainGrid.Instance.Summoners[totem.Owner].transform);
-        Vector2 otherSummoner = CoordOf(TerrainGrid.Instance.Summoners[otherPlayer].transform);
+        Vector2 mySummoner = CoordOf(TerrainGrid.Instance.Summoners[totem.Owner]);
+        Vector2 otherSummoner = CoordOf(TerrainGrid.Instance.Summoners[otherPlayer]);
 
-        Vector2 myCoord = CoordOf(transform);
+        Vector2 myCoord = CoordOf(totem);
 
         float intelligence = totem.TotemIntelligence/6.0f;
         float wantToKillSummoner = intelligence;
         float wantToDefendSummoner = 1-intelligence;
         foreach(Totem t in TerrainGrid.Instance.Totems[otherPlayer])
         {
-            desire[CoordOf(t.transform)] =
-                wantToDefendSummoner*(Closeness(mySummoner, CoordOf(t.transform)) +
-                Closeness(myCoord, CoordOf(t.transform)));
+            desire[CoordOf(t)] =
+                wantToDefendSummoner*(Closeness(mySummoner, CoordOf(t)) +
+                Closeness(myCoord, CoordOf(t)));
         }
         desire[otherSummoner] =
             wantToKillSummoner * Closeness(myCoord, otherSummoner);
@@ -61,7 +66,7 @@ public class TotemAi : MonoBehaviour
 
         // now we have a target! go there!
         float edgeNoise = Mathf.Pow(10, 5-totem.TotemIntelligence);
-        Vector2 source = CoordOf(transform);
+        Vector2 source = CoordOf(totem);
 
         TerrainGrid grid = TerrainGrid.Instance;
         IShortestPathGraph<Vector2> graph = new DijkstraShortestPathGraph<Vector2>();

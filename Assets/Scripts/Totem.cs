@@ -66,7 +66,7 @@ public class Totem : MonoBehaviour
     {
         Owner = ownerPlayerId;
         if (Network.isServer)
-            TerrainGrid.RegisterTotem(ownerPlayerId, this);
+            Cell = TerrainGrid.RegisterTotem(ownerPlayerId, this);
     }
 
     [RPC]
