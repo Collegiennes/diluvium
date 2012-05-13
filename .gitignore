@@ -7,3 +7,5 @@
 *.suo
 /diluvium-csharp.5.1.ReSharper.user
 /Assets/Meshes/Materials
+
+/Builds
