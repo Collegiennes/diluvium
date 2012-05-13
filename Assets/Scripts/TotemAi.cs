@@ -25,20 +25,16 @@ public class TotemAi : MonoBehaviour
         return 1-Mathf.Min(10, Distance(a, b))/10.0f;
     }
 
-	void OnMyTurn(Totem totem)
+	Vector3? OnMyTurn(Totem totem)
     {
         // find a target
-        Dictionary<Vector2,float> desire = new Dictionary<Vector2, float>();
+        var desire = new Dictionary<Vector2, float>();
 
         int otherPlayer = totem.Owner == TerrainGrid.ServerPlayerId ?
             TerrainGrid.ClientPlayerId : TerrainGrid.ServerPlayerId;
 
-        Vector2 mySummoner =
-            //new Vector2(2, 2);
-            CoordOf(TerrainGrid.Instance.Summoners[totem.Owner].transform);
-        Vector2 otherSummoner =
-            //new Vector2(8, 2);
-            CoordOf(TerrainGrid.Instance.Summoners[otherPlayer].transform);
+        Vector2 mySummoner = CoordOf(TerrainGrid.Instance.Summoners[totem.Owner].transform);
+        Vector2 otherSummoner = CoordOf(TerrainGrid.Instance.Summoners[otherPlayer].transform);
 
         Vector2 myCoord = CoordOf(transform);
 
@@ -113,17 +109,14 @@ public class TotemAi : MonoBehaviour
 
         IList<Vector2> path = graph.GetPath(source, target);
         if(path == null)
-            return;
+            return null;
 
         Vector2 direction = path[1] - path[0];
-        if(path.Count > 2)
-        {
-            networkView.RPC(path.Count > 2 ? "MoveTo" : "AttackTowards",
-                RPCMode.All, new Vector3(direction.x, 0, direction.y));
-        }
+        if (path.Count > 2)
+            networkView.RPC("MoveTo", RPCMode.All, new Vector3(direction.x, 0, direction.y));
         else
-        {
-            totem.AttackTowards(direction);
-        }
+            return new Vector3(direction.x, 0, direction.y);
+
+        return null;
 	}
 }

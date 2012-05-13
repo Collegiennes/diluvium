@@ -8,11 +8,11 @@ public class Totem : MonoBehaviour
 {
     public const float MaxJumpHeight = 2.5f;
 
-    public const float TransitionDuration = 0.4f;
+    public const float TransitionDuration = 0.3f;
     public AnimationCurve JumpHeightCurve;
     public AnimationCurve JumpTimeCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-    public delegate void MyTurnHandler(Totem t);
+    public delegate Vector3? MyTurnHandler(Totem t);
     public event MyTurnHandler MyTurn;
 
     List<string> SubObjectsNames = new List<string> { "LowAnimal", "MidAnimal", "HighAnimal" };
@@ -29,7 +29,8 @@ public class Totem : MonoBehaviour
     // server-side
     int totemSpeed;
     int moveTimeBuffer;
-    readonly List<int> attackTimeBuffers = new List<int>(3);   
+    readonly List<int> attackTimeBuffers = new List<int>(3);
+    Vector3? attackDirection;
 
     void Start()
     {
@@ -116,23 +117,44 @@ public class Totem : MonoBehaviour
         if (moveTimeBuffer == 4 && totemSpeed == 1)       doMove = true;
         else if (moveTimeBuffer == 3 && totemSpeed == 2)  doMove = true;
         else if (moveTimeBuffer == 2 && totemSpeed == 3)  doMove = true;
-        else if (moveTimeBuffer == 1 && totemSpeed == 4)  doMove = true;
+        else if (moveTimeBuffer == 1 && totemSpeed >= 4)  doMove = true;
 
         if (doMove)
         {
             moveTimeBuffer = 0;
-            if(MyTurn != null)
-                MyTurn(this);
+            var wasAttacking = attackDirection.HasValue;
+
+            if (MyTurn != null)
+            {
+                attackDirection = MyTurn(this);
+
+                // clear attack buffers if start attacking
+                if (!wasAttacking && attackDirection.HasValue)
+                    for (int animalId = 0; animalId < AnimalObjects.Count; animalId++)
+                        attackTimeBuffers[animalId] = 0;
+            }
         }
 
-        // TODO : If near enemy and wants to attack
-        //if (true)
-        //    for (int i = 0; i < AnimalObjects.Count; i++)
-        //        OnAttackBeat(i, isTriplet);
-    }
+        if (attackDirection.HasValue)
+        {
+            for (int animalId = 0; animalId < AnimalObjects.Count; animalId++)
+            {
+                bool doAttack = false;
+                var data = AnimalData[animalId];
 
-    void OnAttackBeat(int animalId)
-    {
+                attackTimeBuffers[animalId]++;
+                if (attackTimeBuffers[animalId] == 4 && data.speed == 1) doAttack = true;
+                else if (attackTimeBuffers[animalId] == 3 && data.speed == 2) doAttack = true;
+                else if (attackTimeBuffers[animalId] == 2 && data.speed == 3) doAttack = true;
+                else if (attackTimeBuffers[animalId] == 1 && data.speed >= 4) doAttack = true;
+
+                if (doAttack)
+                {
+                    attackTimeBuffers[animalId] = 0;
+                    networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value);
+                }
+            }
+        }
     }
 
     [RPC]
@@ -171,50 +193,28 @@ public class Totem : MonoBehaviour
         });
     }
 
-    public void AttackTowards(Vector3 direction)
-    {
-        for (int animalId = 0; animalId < AnimalObjects.Count; animalId++)
-        {
-            bool doAttack = false;
-            var data = AnimalData[animalId];
-
-            attackTimeBuffers[animalId]++;
-            if (attackTimeBuffers[animalId] == 4 && data.speed == 1) doAttack = true;
-            else if (attackTimeBuffers[animalId] == 3 && data.speed == 2) doAttack = true;
-            else if (attackTimeBuffers[animalId] == 2 && data.speed == 3) doAttack = true;
-            else if (attackTimeBuffers[animalId] == 1 && data.speed == 4) doAttack = true;
-
-            if (doAttack)
-            {
-                attackTimeBuffers[animalId] = 0;
-
-                // TODO : grab the enemy's view ID
-                NetworkViewID enemyId = default(NetworkViewID);
-                networkView.RPC("AttackWith", RPCMode.All, animalId, enemyId);
-            }
-        }
-    }
-
     [RPC]
-    public void AttackWith(int animalId, NetworkViewID enemy)
+    public void AttackWith(int animalId, Vector3 direction)
     {
         var animalObject = AnimalObjects[animalId];
-        var origin = animalObject.transform.position;
+        var origin = animalObject.transform.localPosition;
 
-        // TODO : get attack direction from enemy position
-        var attackPosition = animalObject.transform.position + Vector3.right * 0.25f; // faked
-        animalObject.transform.position = attackPosition;
+        var attackPosition = origin + direction * 0.25f;
+        animalObject.transform.localPosition = attackPosition;
+
+        var x = (int)Math.Floor(transform.position.x + direction.x);
+        var z = (int)Math.Floor(transform.position.z + direction.z);
+        var enemyGo = TerrainGrid.Instance.Cells[x, z].Occupant;
 
         // TODO : remove HP from enemy
-
-        // TODO : spawn effect
+        // TODO : spawn effect(s)
 
         TaskManager.Instance.WaitUntil(elapsedTime =>
         {
             var step = Mathf.Clamp01(elapsedTime / TransitionDuration);
             var easedStep = Easing.EaseIn(step, EasingType.Quadratic);
 
-            transform.position = Vector3.Lerp(attackPosition, origin, easedStep);
+            animalObject.transform.localPosition = Vector3.Lerp(attackPosition, origin, easedStep);
 
             return step >= 1;
         });
