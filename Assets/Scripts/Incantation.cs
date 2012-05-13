@@ -122,7 +122,7 @@ public class Incantation : MonoBehaviour
                 }
 
                 if (validWords.Length > 0)
-                    thisSummoner.TrySpawn(validWords);
+                    thisSummoner.TrySpawnOnServer(validWords);
 
                 //foreach(string word in words)
                 //{

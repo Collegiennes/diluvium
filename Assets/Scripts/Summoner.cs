@@ -8,6 +8,7 @@ public class Summoner : MonoBehaviour
 {
     public SpawnPoint[] SpawnPoints;
     public DamageNumber WordDisplay;
+    public Totem TotemPrefab;
 
     public bool IsServerSummoner;
     public bool IsFakeAI;
@@ -19,6 +20,8 @@ public class Summoner : MonoBehaviour
     static readonly System.Random random = new System.Random();
     readonly List<int> TestList = new List<int>();
 
+    int PlayerId;
+
     // fake ai stuff
     float willSpawnIn = random.Next(4, 8);
 
@@ -29,7 +32,7 @@ public class Summoner : MonoBehaviour
 
     void Start()
     {
-        TerrainGrid.Instance.Summoners.Add(IsServerSummoner ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId,
+        TerrainGrid.Instance.Summoners.Add(PlayerId = (IsServerSummoner ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId),
                                            this);
 
         var x = (int) Math.Floor(transform.position.x);
@@ -53,16 +56,25 @@ public class Summoner : MonoBehaviour
                 while ((thirdAnimal = animals[random.Next(0, animals.Length)]) == firstAnimal && thirdAnimal == secondAnimal) ;
 
                 var count = random.Next(1, 4);
-                if (count == 1) TrySpawn(new[] { firstAnimal.ToUpper() });
-                if (count == 2) TrySpawn(new[] { firstAnimal.ToUpper(), secondAnimal.ToUpper() });
-                if (count == 3) TrySpawn(new[] { firstAnimal.ToUpper(), secondAnimal.ToUpper(), thirdAnimal.ToUpper() });
+                if (count == 1) TrySpawn(firstAnimal.ToUpper(), "", "");
+                if (count == 2) TrySpawn(firstAnimal.ToUpper(), secondAnimal.ToUpper(), "");
+                if (count == 3) TrySpawn(firstAnimal.ToUpper(), secondAnimal.ToUpper(), thirdAnimal.ToUpper());
 
                 willSpawnIn = random.Next(4, 8);
             }
         }
     }
 
-    public void TrySpawn(string[] validWords)
+    public void TrySpawnOnServer(string[] animals)
+    {
+        if (IsServerSummoner)
+            TrySpawn(animals[0], animals.Length > 1 ? animals[1] : "", animals.Length > 2 ? animals[2] : "");
+        else
+            networkView.RPC("TrySpawn", RPCMode.Server, animals[0], animals.Length > 1 ? animals[1] : "", animals.Length > 2 ? animals[2] : "");
+    }
+
+    [RPC]
+    public void TrySpawn(string animalName1, string animalName2, string animalName3)
     {
         bool hasSpawned = false;
 
@@ -80,7 +92,7 @@ public class Summoner : MonoBehaviour
 
             if (TerrainGrid.IsWalkable(x, z))
             {
-                sp.SpawnTotemOnServer((Network.isServer && !IsFakeAI) ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId, validWords);
+                Spawn(sp, animalName1, animalName2, animalName3);
                 hasSpawned = true;
                 break;
             }
@@ -100,7 +112,7 @@ public class Summoner : MonoBehaviour
 
                 if (TerrainGrid.IsWalkable(x, z))
                 {
-                    sp.SpawnTotemOnServer((Network.isServer && !IsFakeAI) ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId, validWords);
+                    Spawn(sp, animalName1, animalName2, animalName3);
                     hasSpawned = true;
                     break;
                 }
@@ -108,11 +120,21 @@ public class Summoner : MonoBehaviour
         }
 
         if (hasSpawned)
-            networkView.RPC("ShowWords", RPCMode.All, validWords[0],
-                            validWords.Length > 1 ? validWords[1] : string.Empty,
-                            validWords.Length > 2 ? validWords[2] : string.Empty);
+            networkView.RPC("ShowWords", RPCMode.All, animalName1, animalName2, animalName3);
         else
             Debug.Log("No more space to spawn!");
+    }
+
+    void Spawn(SpawnPoint spawnPoint, string animalName1, string animalName2, string animalName3)
+    {
+        var totemGo = Network.Instantiate(TotemPrefab, spawnPoint.transform.position, Quaternion.identity, 0) as Totem;
+
+        totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName1);
+        if (!string.IsNullOrEmpty(animalName2)) totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName2);
+        if (!string.IsNullOrEmpty(animalName3)) totemGo.networkView.RPC("AddAnimal", RPCMode.All, animalName3);
+
+        totemGo.SetOwner(PlayerId);
+        totemGo.networkView.RPC("SetOwner", RPCMode.Others, PlayerId);
     }
 
     [RPC]

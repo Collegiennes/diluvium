@@ -401,7 +401,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!1 &18845296
 GameObject:
   m_ObjectHideFlags: 0
@@ -4481,7 +4480,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!1 &232215430
 GameObject:
   m_ObjectHideFlags: 0
@@ -6197,6 +6195,7 @@ MonoBehaviour:
   - {fileID: 1172113247}
   - {fileID: 226918891}
   WordDisplay: {fileID: 11400000, guid: bcc410b51a1c8404d8e27b45e4e72f6c, type: 2}
+  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
   IsServerSummoner: 0
   IsFakeAI: 0
 --- !u!1001 &386698119
@@ -6467,7 +6466,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!148 &402863542
 NetworkView:
   m_ObjectHideFlags: 0
@@ -14894,7 +14892,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!148 &983568122
 NetworkView:
   m_ObjectHideFlags: 0
@@ -17269,7 +17266,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!148 &1165149939
 NetworkView:
   m_ObjectHideFlags: 0
@@ -17336,7 +17332,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!1 &1176041232
 GameObject:
   m_ObjectHideFlags: 0
@@ -21167,7 +21162,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!1 &1441937015
 GameObject:
   m_ObjectHideFlags: 0
@@ -23340,7 +23334,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!148 &1594763331
 NetworkView:
   m_ObjectHideFlags: 0
@@ -23394,7 +23387,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!148 &1595552448
 NetworkView:
   m_ObjectHideFlags: 0
@@ -23884,6 +23876,7 @@ MonoBehaviour:
   - {fileID: 1438816412}
   - {fileID: 15383670}
   WordDisplay: {fileID: 11400000, guid: bcc410b51a1c8404d8e27b45e4e72f6c, type: 2}
+  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
   IsServerSummoner: 1
   IsFakeAI: 0
 --- !u!1001 &1629253455
@@ -24629,6 +24622,14 @@ Prefab:
     - target: {fileID: 400000, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
+      propertyPath: ServerIP
+      value: 10.10.234.101
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
+      propertyPath: ClientIP
+      value: 10.10.233.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
@@ -27702,7 +27703,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249a2d284dca7b94f9ce824dde5ec458, type: 1}
   m_Name: 
-  TotemPrefab: {fileID: 11400002, guid: a737772c87ebe2b4cb5756bb88817baf, type: 2}
 --- !u!148 &1912098105
 NetworkView:
   m_ObjectHideFlags: 0
@@ -28532,8 +28532,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b269bf6748e75e4abc72c36fb87b56a, type: 1}
   m_Name: 
-  ServerIP: 192.168.0.1
-  ClientIP: 192.168.0.2
+  ServerIP: 10.10.234.101
+  ClientIP: 10.10.233.7
+  LocalMode: 0
 --- !u!114 &2002489802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28735,6 +28736,65 @@ MonoBehaviour:
     m_FontSize: 26
     m_FontStyle: 0
     m_StretchWidth: 0
+    m_StretchHeight: 0
+  outlineStyle:
+    m_Name: 
+    m_Normal:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Hover:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Active:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Focused:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnNormal:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnHover:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnActive:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnFocused:
+      m_Background: {fileID: 0}
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Border:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Padding:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Margin:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Overflow:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Font: {fileID: 0}
+    m_ImagePosition: 0
+    m_Alignment: 0
+    m_WordWrap: 0
+    m_TextClipping: 1
+    m_ContentOffset: {x: 0, y: 0}
+    m_ClipOffset: {x: 0, y: 0}
+    m_FixedWidth: 0
+    m_FixedHeight: 0
+    m_FontSize: 0
+    m_FontStyle: 0
+    m_StretchWidth: 1
     m_StretchHeight: 0
   boxStyle:
     m_Name: 
