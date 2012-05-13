@@ -6010,7 +6010,7 @@ GameObject:
   - 114: {fileID: 377643991}
   - 148: {fileID: 377643990}
   m_Layer: 0
-  m_Name: Summoner
+  m_Name: Client Summoner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6060,6 +6060,7 @@ MonoBehaviour:
   - {fileID: 1172113247}
   - {fileID: 226918891}
   IsServerSummoner: 0
+  IsFakeAI: 1
 --- !u!1001 &386698119
 Prefab:
   m_ObjectHideFlags: 0
@@ -15122,6 +15123,10 @@ Prefab:
       propertyPath: SpawnPoints.Array.data[4]
       value: 
       objectReference: {fileID: 15383670}
+    - target: {fileID: 100000, guid: 24f161124006d534ca4efafdbfae6db1, type: 2}
+      propertyPath: m_Name
+      value: Server Summoner
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 24f161124006d534ca4efafdbfae6db1, type: 2}
   m_RootGameObject: {fileID: 1625835045}
@@ -22996,7 +23001,7 @@ GameObject:
   - 114: {fileID: 1625835048}
   - 148: {fileID: 1625835047}
   m_Layer: 0
-  m_Name: Summoner
+  m_Name: Server Summoner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23046,6 +23051,7 @@ MonoBehaviour:
   - {fileID: 1438816412}
   - {fileID: 15383670}
   IsServerSummoner: 1
+  IsFakeAI: 0
 --- !u!1001 &1629253455
 Prefab:
   m_ObjectHideFlags: 0
@@ -27210,6 +27216,14 @@ Prefab:
       propertyPath: SpawnPoints.Array.data[4]
       value: 
       objectReference: {fileID: 226918891}
+    - target: {fileID: 100000, guid: 24f161124006d534ca4efafdbfae6db1, type: 2}
+      propertyPath: m_Name
+      value: Client Summoner
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 24f161124006d534ca4efafdbfae6db1, type: 2}
+      propertyPath: IsFakeAI
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 24f161124006d534ca4efafdbfae6db1, type: 2}
   m_RootGameObject: {fileID: 377643988}
