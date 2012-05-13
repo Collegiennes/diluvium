@@ -48,8 +48,15 @@ public class TotemAi : MonoBehaviour
         }
         desire[otherSummoner] =
             wantToKillSummoner * Closeness(myCoord, otherSummoner);
+        Vector2 target = desire.OrderByDescending(x => x.Value).First().Key;
 
-        Vector2 target = desire.OrderBy(x => x.Value).First().Key;
+        //string msg = "";
+        //foreach(KeyValuePair<Vector2, float> k in desire)
+        //{
+        //    msg += k + " ";
+        //}
+        //msg += "\n" + target;
+        //print(msg);
 
         // now we have a target! go there!
         float edgeNoise = Mathf.Pow(10, 5-totem.TotemIntelligence);
