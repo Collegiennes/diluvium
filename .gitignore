@@ -5,6 +5,7 @@
 /_ReSharper.diluvium-csharp
 *.sln
 *.suo
+.DS_Store
 /diluvium-csharp.5.1.ReSharper.user
 /Assets/Meshes/Materials
 
