@@ -810,6 +810,7 @@ MonoBehaviour:
   summonSound: {fileID: 8300000, guid: 5a5781f8e7ae69045b2289240c010ba2, type: 1}
   HurtTemplate: {fileID: 100002, guid: 7e10f88f8fa3b4744a52e10ffccef91f, type: 2}
   NumberTemplate: {fileID: 11400000, guid: bcc410b51a1c8404d8e27b45e4e72f6c, type: 2}
+  ghostPrefab: {fileID: 400000, guid: d362cae4bebdfe84caa8bb0157d2837d, type: 2}
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1

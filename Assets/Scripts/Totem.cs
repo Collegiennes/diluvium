@@ -35,6 +35,8 @@ public class Totem : MonoBehaviour
     public GameObject HurtTemplate;
     public DamageNumber NumberTemplate;
 
+    public Transform ghostPrefab;
+
     bool disposed;
 
     // server-side
@@ -128,6 +130,10 @@ public class Totem : MonoBehaviour
 
     void OnDestroy()
     {
+        foreach (GameObject go in AnimalObjects)
+        {
+            Instantiate(ghostPrefab, go.transform.position+Vector3.up*0.4f, Quaternion.identity);
+        }
         TimeKeeper.Instance.Beat -= OnBeat;
         if (Network.isServer)
             TerrainGrid.UnregisterTotem(Owner, this);
