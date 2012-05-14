@@ -30,6 +30,7 @@ GameObject:
   - 114: {fileID: 11400002}
   - 148: {fileID: 14800000}
   - 114: {fileID: 11400008}
+  - 82: {fileID: 8200000}
   m_Layer: 0
   m_Name: Totem
   m_TagString: Untagged
@@ -258,7 +259,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: .707106352, z: 0, w: .707107246}
-  m_LocalPosition: {x: -1.94904232, y: .5, z: 2.62224841}
+  m_LocalPosition: {x: 5.87213087, y: .49999997, z: 2.41238856}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 89.9999237, z: 0}
   m_Children:
@@ -673,6 +674,62 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 0
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!82 &8200000
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
 --- !u!111 &11100000
 Animation:
   m_ObjectHideFlags: 1
@@ -741,6 +798,16 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
   Owner: 0
+  attackSounds:
+  - {fileID: 8300000, guid: ce6357d6d353314458bb0fd4d1919128, type: 1}
+  - {fileID: 8300000, guid: 961881027a2ff194bbfca419a7201eb1, type: 1}
+  - {fileID: 8300000, guid: 9e6e041f385fdfd4da4ee37177707efb, type: 1}
+  - {fileID: 8300000, guid: 8937985ef0dd30842abbe2100bd270f5, type: 1}
+  - {fileID: 8300000, guid: f609167248f6cb543b29934f6a0ffc42, type: 1}
+  - {fileID: 8300000, guid: 284c770f7dde78e498f944582c08237f, type: 1}
+  - {fileID: 8300000, guid: 2dcce4201abf17f4899e478c0d1fcaad, type: 1}
+  - {fileID: 8300000, guid: dd18fed5eddbe6a45a9753f257cc51a5, type: 1}
+  summonSound: {fileID: 8300000, guid: 5a5781f8e7ae69045b2289240c010ba2, type: 1}
   HurtTemplate: {fileID: 100002, guid: 7e10f88f8fa3b4744a52e10ffccef91f, type: 2}
   NumberTemplate: {fileID: 11400000, guid: bcc410b51a1c8404d8e27b45e4e72f6c, type: 2}
 --- !u!114 &11400004
