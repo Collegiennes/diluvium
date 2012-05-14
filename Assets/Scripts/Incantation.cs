@@ -9,6 +9,7 @@ public class Incantation : MonoBehaviour
     public GUIStyle containerStyle;
     public GUIStyle textBoxStyle;
     public GUIStyle textStyle;
+    public GUIStyle outlineStyle;
     public GUIStyle boxStyle;
     public Color hpGoodColor;
     public Color hpBadColor;
@@ -33,11 +34,12 @@ public class Incantation : MonoBehaviour
         GUILayout.FlexibleSpace();
         GUILayout.Label(Mathf.CeilToInt(amount) + "/20", textStyle);
         GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal(GUILayout.Height(10));
+        GUI.color = new Color(0, 0, 0, 0.75f);
+        GUILayout.BeginHorizontal(outlineStyle, GUILayout.Height(12));
         GUI.color = full;
-        GUILayout.Box("", boxStyle, GUILayout.Width(366*amount/20.0f));
+        GUILayout.Box("", boxStyle, GUILayout.Width(362*amount/20.0f));
         GUI.color = empty;
-        GUILayout.Box("", boxStyle, GUILayout.Width(366*(1-(amount/20.0f))));
+        GUILayout.Box("", boxStyle, GUILayout.Width(362*(1-(amount/20.0f))));
         GUI.color = Color.white;
         GUILayout.EndHorizontal();
     }
