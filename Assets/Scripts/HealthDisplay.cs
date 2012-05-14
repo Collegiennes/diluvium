@@ -28,6 +28,9 @@ public class HealthDisplay : MonoBehaviour
 
     void Update()
     {
+        if(totem.TotemMaxHealth == 0)
+            return;
+
         float scale = pivot.localScale.x;
         float t = Mathf.Pow(0.01f, Time.deltaTime);
         scale = scale * t +
