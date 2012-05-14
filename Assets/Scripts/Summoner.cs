@@ -16,11 +16,11 @@ public class Summoner : MonoBehaviour
     public bool HasTakenDamage { get; private set; }
     public float Health { get; private set; }
 
-    System.Random random = new System.Random();
+    static readonly System.Random random = new System.Random();
     readonly List<int> TestList = new List<int>();
 
     // fake ai stuff
-    float willSpawnIn;
+    float willSpawnIn = random.Next(4, 8);
 
     void Awake()
     {
@@ -37,9 +37,6 @@ public class Summoner : MonoBehaviour
 
         var gridCell = TerrainGrid.Instance.Cells[x, z];
         gridCell.Occupant = gameObject;
-
-        if (IsFakeAI)
-            willSpawnIn = random.Next(4, 8);
     }
 
     void Update()
