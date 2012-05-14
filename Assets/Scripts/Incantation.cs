@@ -122,21 +122,37 @@ public class Incantation : MonoBehaviour
                 text += char.ToUpper(e.character);
             else if(e.character == '\n')
             {
-                var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToArray();
+                var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToList();
+                foreach (var w in validWords.ToArray())
+                {
+                    for(int i = 0; i < TerrainGrid.Instance.sizeX; i++) for(int j = 0; j < TerrainGrid.Instance.sizeZ; j++)
+                    {
+                        if (TerrainGrid.Instance.Cells[i, j] != null)
+                        {
+                            var o = TerrainGrid.Instance.Cells[i, j].Occupant;
+                            if (o != null && o.GetComponent<Totem>() != null)
+                            {
+                                foreach (var a in o.GetComponent<Totem>().AnimalData)
+                                    if (w == a.name)
+                                        validWords.Remove(w);
+                            }
+                        }
+                    }
+                }
 
-                if (words.Length != validWords.Length)
+                if (words.Length != validWords.Count)
                 {
                     thisSummoner.HasFailed = true;
                     TaskManager.Instance.WaitFor(0.5f).Then(() => { thisSummoner.HasFailed = false; });
                     audio.PlayOneShot(mistakeSound);
                 }
-                else if (validWords.Length > 0)
+                else if (validWords.Count > 0)
                 {
                     audio.PlayOneShot(enterSound);
                 }
 
-                if (validWords.Length > 0)
-                    thisSummoner.TrySpawnOnServer(validWords);
+                if (validWords.Count > 0)
+                    thisSummoner.TrySpawnOnServer(validWords.ToArray());
 
                 //foreach(string word in words)
                 //{

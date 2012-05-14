@@ -22,6 +22,8 @@ public class Summoner : MonoBehaviour
     static readonly System.Random random = new System.Random();
     readonly List<int> TestList = new List<int>();
 
+    public event Action Die;
+
     int PlayerId;
 
     // fake ai stuff
@@ -169,7 +171,14 @@ public class Summoner : MonoBehaviour
     public void Hurt(float amount)
     {
         Health -= amount;
-        if (Health < 0) Health = 0;
+        if (Health < 0)
+        {
+            Health = 0;
+            //var localPlayerId = Network.isServer
+            //                        ? TerrainGrid.ServerPlayerId
+            //                        : TerrainGrid.ClientPlayerId;
+            if (Die != null) Die();
+        }
 
         audio.PlayOneShot(hurtSound);
 

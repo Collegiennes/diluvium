@@ -18,7 +18,7 @@ public class Totem : MonoBehaviour
     List<string> SubObjectsNames = new List<string> { "LowAnimal", "MidAnimal", "HighAnimal" };
 
     public readonly List<GameObject> AnimalObjects = new List<GameObject>(3);
-    readonly List<AnimalData> AnimalData = new List<AnimalData>(3);
+    public readonly List<AnimalData> AnimalData = new List<AnimalData>(3);
 
     public int TotemIntelligence { get; private set; }
     public int TotemMaxHealth { get; private set; }
