@@ -94,13 +94,13 @@ public class Totem : MonoBehaviour
 
         var index = animalData.spriteIndex - 1;
 
-        var row = index % 12;
-        var col = index / 12;
+        var row = index % 10;
+        var col = index / 10;
 
         foreach (var r in animalObject.GetComponentsInChildren<Renderer>())
         {
             r.enabled = true;
-            r.material.mainTextureOffset = new Vector2(row / 12f, 1 - col / 12f - 1 / 12f);
+            r.material.mainTextureOffset = new Vector2(row / 10f, 1 - col / 10f - 1 / 10f);
         }
 
         // TODO : floor?
@@ -128,8 +128,15 @@ public class Totem : MonoBehaviour
         Shadow.transform.localScale = new Vector3(scaleFactor, 1, scaleFactor);
     }
 
+    void OnApplicationQuit()
+    {
+        disposed = true;
+    }
+
     void OnDestroy()
     {
+        if (disposed) return;
+
         foreach (GameObject go in AnimalObjects)
         {
             Instantiate(ghostPrefab, go.transform.position+Vector3.up*0.4f, Quaternion.identity);

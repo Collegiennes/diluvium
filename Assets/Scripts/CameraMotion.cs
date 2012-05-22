@@ -17,6 +17,11 @@ public class CameraMotion : MonoBehaviour
     bool stop = true;
     bool win, lose;
 
+    void Awake()
+    {
+        PanFactor = 1;
+    }
+
 	void Start ()
     {
         transform.localRotation = Quaternion.Euler(0, 45, 0);
@@ -28,8 +33,8 @@ public class CameraMotion : MonoBehaviour
     {
         TaskManager.Instance.WaitUntil(_ => TerrainGrid.Instance.Summoners.Count == 2).Then(() =>
         {
-            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { win = true; };
-            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { lose = true; };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { win = true; time = 0;  };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { lose = true; time = 0; };
         });
     }
     void OnConnectedToServer()
@@ -37,8 +42,8 @@ public class CameraMotion : MonoBehaviour
         transform.localRotation = Quaternion.Euler(0, -45, 0);
         TaskManager.Instance.WaitUntil(_ => TerrainGrid.Instance.Summoners.Count == 2).Then(() =>
         {
-            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { win = true; };
-            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { lose = true; };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { win = true; time = 0; };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { lose = true; time = 0; };
         });
     }
 
@@ -48,12 +53,24 @@ public class CameraMotion : MonoBehaviour
         {
             Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 1));
             Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0.25f);
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Network.Disconnect();
+                Application.Quit();
+            }
         }
 
         if (lose)
         {
             Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 1));
             Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0);
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Network.Disconnect();
+                Application.Quit();
+            }
         }
 
         if (showing <= 2)
@@ -95,6 +112,8 @@ public class CameraMotion : MonoBehaviour
             transform.position = t * transform.position + (1 - t) * FindSceneCenter();
 
             PanFactor = 1 - Easing.EaseOut(Mathf.Clamp01(time / 3), EasingType.Quadratic);
+            if (win || lose)
+                PanFactor = 1 - PanFactor;
         }
 	}
 

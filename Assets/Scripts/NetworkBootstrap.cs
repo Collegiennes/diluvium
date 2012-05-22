@@ -94,6 +94,8 @@ public class NetworkBootstrap : MonoBehaviour
 
         waitingForClient = true;
         // TODO : make sure that the game ends? (done in each component?)
+
+        Application.Quit();
     }
 
     #endregion
@@ -128,6 +130,8 @@ public class NetworkBootstrap : MonoBehaviour
         PeerType = NetworkPeerType.Disconnected;
         errorMessage = "Disconnected from server (reason : " + info;
         // TODO : prompt for reconnection?
+
+        Application.Quit();
     }
 
     #endregion

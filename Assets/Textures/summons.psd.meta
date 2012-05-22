@@ -3,7 +3,7 @@ guid: 6750149610fac5941816a7b946c71bf8
 TextureImporter:
   serializedVersion: 2
   mipmaps:
-    mipMapMode: 0
+    mipMapMode: 1
     enableMipMap: 0
     linearTexture: 0
     correctGamma: 0
@@ -22,7 +22,7 @@ TextureImporter:
   textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
-    filterMode: 0
+    filterMode: 2
     aniso: 9
     mipBias: -1
     wrapMode: 1

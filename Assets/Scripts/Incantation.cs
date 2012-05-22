@@ -118,26 +118,17 @@ public class Incantation : MonoBehaviour
         Event e = Event.current;
         if(e.type == EventType.KeyDown)
         {
-            if(char.IsLetter(e.character) || (e.character == ' ' && words.Length < 3))
+            if(char.IsLetter(e.character) || (e.character == ' ' && words.Length < 3 && words.Length > 0))
                 text += char.ToUpper(e.character);
             else if(e.character == '\n')
             {
                 var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToList();
+
                 foreach (var w in validWords.ToArray())
                 {
-                    for(int i = 0; i < TerrainGrid.Instance.sizeX; i++) for(int j = 0; j < TerrainGrid.Instance.sizeZ; j++)
-                    {
-                        if (TerrainGrid.Instance.Cells[i, j] != null)
-                        {
-                            var o = TerrainGrid.Instance.Cells[i, j].Occupant;
-                            if (o != null && o.GetComponent<Totem>() != null)
-                            {
-                                foreach (var a in o.GetComponent<Totem>().AnimalData)
-                                    if (w == a.name)
-                                        validWords.Remove(w);
-                            }
-                        }
-                    }
+                    foreach (var t in TerrainGrid.Instance.Totems.Values.SelectMany(x => x))
+                        if (t.AnimalData.Any(x => x.name.Equals(w, System.StringComparison.InvariantCultureIgnoreCase)))
+                            validWords.Remove(w);
                 }
 
                 if (words.Length != validWords.Count)

@@ -13,7 +13,7 @@ PlayerSettings:
   companyName: Renaud
   productName: diluvium
   AndroidLicensePublicKey: 
-  defaultScreenWidth: 1024
+  defaultScreenWidth: 1366
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
@@ -22,7 +22,7 @@ PlayerSettings:
   m_MTRendering: 1
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
-  displayResolutionDialog: 1
+  displayResolutionDialog: 2
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
   allowedAutorotateToLandscapeRight: 1
@@ -30,7 +30,7 @@ PlayerSettings:
   useOSAutorotation: 1
   use32BitDisplayBuffer: 0
   use24BitDepthBuffer: 0
-  defaultIsFullScreen: 0
+  defaultIsFullScreen: 1
   runInBackground: 0
   captureSingleScreen: 0
   Override IPod Music: 0
@@ -126,6 +126,7 @@ PlayerSettings:
   ps3TrophyCommId: 
   ps3TrophyPackagePath: 
   ps3ReservedMemorySizeMB: 2
+  ps3ReservedHDDSizeMB: 128
   flashStrippingLevel: 2
   firstStreamedLevelWithResources: 0
   unityRebuildLibraryVersion: 9
