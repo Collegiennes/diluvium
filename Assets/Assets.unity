@@ -24755,11 +24755,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
       propertyPath: ServerIP
-      value: 192.168.1.142
+      value: 192.168.1.255
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
       propertyPath: ClientIP
       value: 192.168.1.134
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
+      propertyPath: LocalMode
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6ebaad44e9190a9449d8684dba275c0d, type: 2}
@@ -28625,6 +28629,7 @@ GameObject:
   - 114: {fileID: 2002489803}
   - 114: {fileID: 2002489800}
   - 82: {fileID: 2002489804}
+  - 114: {fileID: 2002489805}
   m_Layer: 0
   m_Name: Globals
   m_TagString: Untagged
@@ -28666,7 +28671,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b269bf6748e75e4abc72c36fb87b56a, type: 1}
   m_Name: 
-  ServerIP: 192.168.1.142
+  ServerIP: 192.168.1.255
   ClientIP: 192.168.1.134
   LocalMode: 0
 --- !u!114 &2002489802
@@ -29053,6 +29058,16 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+--- !u!114 &2002489805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2002489798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c2da5df010ca164a8671a84cfc77048, type: 1}
+  m_Name: 
 --- !u!1001 &2009396840
 Prefab:
   m_ObjectHideFlags: 0

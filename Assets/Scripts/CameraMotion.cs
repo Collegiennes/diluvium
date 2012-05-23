@@ -15,26 +15,38 @@ public class CameraMotion : MonoBehaviour
     GameObject[] order;
     float time = -1;
     bool stop = true;
-    bool win, lose;
 
     void Awake()
     {
-        PanFactor = 1;
+        transform.localRotation = Quaternion.Euler(0, 45, 0);
+        origin = transform.position;
+        Restart();
+        time = -1;
     }
 
-	void Start ()
+	void Start()
     {
-        transform.localRotation = Quaternion.Euler(0, 45, 0);
-	    origin = transform.position;
         order = new[] { Credits, Logo, Tutorial };
 	}
+
+    void Restart()
+    {
+        PanFactor = 1;
+        time = -2;
+        stop = true;
+        showing = 0;
+        transform.position = origin;
+
+        Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0));
+        Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0.75f);
+    }
 
     void OnServerInitialized()
     {
         TaskManager.Instance.WaitUntil(_ => TerrainGrid.Instance.Summoners.Count == 2).Then(() =>
         {
-            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { win = true; time = 0;  };
-            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { lose = true; time = 0; };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { GameFlow.State = GameState.Won; time = 0;  };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { GameFlow.State = GameState.Lost; time = 0; };
         });
     }
     void OnConnectedToServer()
@@ -42,34 +54,34 @@ public class CameraMotion : MonoBehaviour
         transform.localRotation = Quaternion.Euler(0, -45, 0);
         TaskManager.Instance.WaitUntil(_ => TerrainGrid.Instance.Summoners.Count == 2).Then(() =>
         {
-            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { win = true; time = 0; };
-            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { lose = true; time = 0; };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { GameFlow.State = GameState.Won; time = 0; };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { GameFlow.State = GameState.Lost; time = 0; };
         });
     }
 
 	void Update ()
 	{
-        if (win)
+        if (GameFlow.State == GameState.Won)
         {
             Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 1));
             Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0.25f);
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Network.Disconnect();
-                Application.Quit();
+                Restart();
+                GameFlow.Instance.Restart();
             }
         }
 
-        if (lose)
+        if (GameFlow.State == GameState.Lost)
         {
             Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 1));
             Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0);
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Network.Disconnect();
-                Application.Quit();
+                Restart();
+                GameFlow.Instance.Restart();
             }
         }
 
@@ -101,6 +113,9 @@ public class CameraMotion : MonoBehaviour
             {
                 showing++;
                 time = 0;
+
+                if (showing == 3)
+                    GameFlow.State = GameState.Gameplay;
             }
         }
 
@@ -112,14 +127,14 @@ public class CameraMotion : MonoBehaviour
             transform.position = t * transform.position + (1 - t) * FindSceneCenter();
 
             PanFactor = 1 - Easing.EaseOut(Mathf.Clamp01(time / 3), EasingType.Quadratic);
-            if (win || lose)
+            if (GameFlow.State == GameState.Won || GameFlow.State == GameState.Lost)
                 PanFactor = 1 - PanFactor;
         }
 	}
 
     Vector3 FindSceneCenter()
     {
-        if (win || lose) return origin;
+        if (GameFlow.State == GameState.Won || GameFlow.State == GameState.Lost) return origin;
 
         Vector3 minPos = new Vector3(100, 100, 100);
         Vector3 maxPos = new Vector3(0, 0, 0);

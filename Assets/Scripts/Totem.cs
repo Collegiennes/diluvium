@@ -79,6 +79,9 @@ public class Totem : MonoBehaviour
             if (Cell == null)
                 throw new InvalidOperationException("Cell should be free at this time");
         }
+        else
+            // For word detection, needs to be done also on client side
+            TerrainGrid.Instance.Totems[ownerPlayerId].Add(this);
     }
 
     [RPC]
@@ -103,7 +106,6 @@ public class Totem : MonoBehaviour
             r.material.mainTextureOffset = new Vector2(row / 10f, 1 - col / 10f - 1 / 10f);
         }
 
-        // TODO : floor?
         totemSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
         TotemIntelligence = AnimalData.Max(x => x.intelligence);
         TotemMaxHealth = AnimalData.Sum(x => x.health);
@@ -144,11 +146,15 @@ public class Totem : MonoBehaviour
         TimeKeeper.Instance.Beat -= OnBeat;
         if (Network.isServer)
             TerrainGrid.UnregisterTotem(Owner, this);
+        else
+            TerrainGrid.Instance.Totems[Owner].Remove(this);
         disposed = true;
     }
 
     void OnBeat()
     {
+        if (GameFlow.State != GameState.Gameplay) return;
+
         bool doMove = false;
 
         moveTimeBuffer++;
@@ -195,11 +201,13 @@ public class Totem : MonoBehaviour
                     if (enemyGo != null && enemyGo.GetComponent<Totem>() != null && enemyGo.GetComponent<Totem>().TotemCurrentHealth > 0)
                     {
                         attackTimeBuffers[animalId] = 0;
-                        networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value);
 
-                        var damage = AnimalData[animalId].attack / 2f;
+                        var damage = AnimalData[animalId].attack / 2f * (1 + (Random.value - 0.5f) * 0.2f);
+
+                        networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value, damage);
                         enemyGo.networkView.RPC("Hurt", RPCMode.Others, damage);
                         enemyGo.GetComponent<Totem>().Hurt(damage);
+
                         if (enemyGo.GetComponent<Totem>().TotemCurrentHealth <= 0)
                         {
                             Debug.Log("animal killed : " + enemyGo + " because health was " + enemyGo.GetComponent<Totem>().TotemCurrentHealth);
@@ -210,11 +218,13 @@ public class Totem : MonoBehaviour
                     if (enemyGo != null && enemyGo.GetComponent<Summoner>() != null && enemyGo.GetComponent<Summoner>().Health > 0)
                     {
                         attackTimeBuffers[animalId] = 0;
-                        networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value);
 
-                        var damage = AnimalData[animalId].attack / 2f;
+                        var damage = AnimalData[animalId].attack / 2f * (1 + (Random.value - 0.5f) * 0.2f);
+
+                        networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value, damage);
                         enemyGo.networkView.RPC("Hurt", RPCMode.Others, damage);
                         enemyGo.GetComponent<Summoner>().Hurt(damage);
+
                         if (enemyGo.GetComponent<Summoner>().Health <= 0)
                         {
                             // TODO : Summoner death
@@ -270,8 +280,10 @@ public class Totem : MonoBehaviour
     }
 
     [RPC]
-    public void AttackWith(int animalId, Vector3 direction)
+    public void AttackWith(int animalId, Vector3 direction, float damage)
     {
+        if (disposed) return;
+
         var animalObject = AnimalObjects[animalId];
         var origin = animalObject.transform.localPosition;
 
@@ -286,13 +298,16 @@ public class Totem : MonoBehaviour
         var row = effectIdx % 4;
         var col = effectIdx / 4;
 
-        audio.PlayOneShot(attackSounds[effectIdx]);
+        if (effectIdx >= 0 && effectIdx < attackSounds.Length)
+            audio.PlayOneShot(attackSounds[effectIdx]);
+        else
+            Debug.Log("tried to play unknown effect index : " + effectIdx);
 
         foreach (var r in hurtGo.GetComponentsInChildren<Renderer>())
             r.material.mainTextureOffset = new Vector2(row / 4f, 1 - col / 4f - 1 / 4f);
 
         var go = Instantiate(NumberTemplate, transform.position + origin + direction, Quaternion.identity) as DamageNumber;
-        go.Text = Math.Round((adata.attack * 10) * (Random.value * 0.2f + 1 - 0.1f)).ToString();
+        go.Text = Math.Round(damage).ToString();
         go.Color = Color.red;
 
         TaskManager.Instance.WaitUntil(elapsedTime =>

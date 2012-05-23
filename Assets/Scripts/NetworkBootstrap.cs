@@ -117,7 +117,9 @@ public class NetworkBootstrap : MonoBehaviour
     void OnFailedToConnect(NetworkConnectionError error)
     {
         PeerType = NetworkPeerType.Disconnected;
-        errorMessage = "Couldn't connect to server (reason : " + error + ")";
+        errorMessage = "Couldn't connect to server (reason : " + error + ") -- will retry in 3 seconds...";
+
+        TaskManager.Instance.WaitFor(3).Then(ConnectToServer);
     }
 
     void OnConnectedToServer()

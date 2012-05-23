@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using System.Collections;
@@ -30,19 +31,24 @@ public class Incantation : MonoBehaviour
         Instance = this;
     }
 
+    public void Restart()
+    {
+        text = string.Empty;
+    }
+
     void ShowHealthBar(float amount, Color full, Color empty)
     {
         GUILayout.BeginHorizontal();
         GUILayout.Label("HP", textStyle);
         GUILayout.FlexibleSpace();
-        GUILayout.Label(Mathf.CeilToInt(amount) + "/20", textStyle);
+        GUILayout.Label(Mathf.CeilToInt(amount) + "/" + Summoner.MaxHealth, textStyle);
         GUILayout.EndHorizontal();
         GUI.color = new Color(0, 0, 0, 0.75f);
         GUILayout.BeginHorizontal(outlineStyle);
         GUI.color = full;
-        GUILayout.Box("", boxStyle, GUILayout.Width(360*amount/20.0f), GUILayout.Height(10));
+        GUILayout.Box("", boxStyle, GUILayout.Width(360.0f * amount / Summoner.MaxHealth), GUILayout.Height(10));
         GUI.color = empty;
-        GUILayout.Box("", boxStyle, GUILayout.Width(360*(1-(amount/20.0f))), GUILayout.Height(10));
+        GUILayout.Box("", boxStyle, GUILayout.Width(360 * (1 - (amount / Summoner.MaxHealth))), GUILayout.Height(10));
         GUI.color = Color.white;
         GUILayout.EndHorizontal();
     }
@@ -114,52 +120,57 @@ public class Incantation : MonoBehaviour
         GUI.DrawTextureWithTexCoords(new Rect(0, Screen.height - portraits.height, 512, portraits.height),
                                      portraits, new Rect(offset, 0, 1 / 3f, 1));
 
-        // handle text entry
-        Event e = Event.current;
-        if(e.type == EventType.KeyDown)
+        GUI.matrix = Matrix4x4.identity;
+
+        if (GameFlow.State == GameState.Gameplay)
         {
-            if(char.IsLetter(e.character) || (e.character == ' ' && words.Length < 3 && words.Length > 0))
-                text += char.ToUpper(e.character);
-            else if(e.character == '\n')
+            // handle text entry
+            Event e = Event.current;
+            if (e.type == EventType.KeyDown)
             {
-                var validWords = words.Where(x => AnimalDatabase.Get(x) != null).ToList();
-
-                foreach (var w in validWords.ToArray())
+                if (char.IsLetter(e.character) || (e.character == ' ' && words.Length < 3 && words.Length > 0 && words[0].Trim().Length > 0))
                 {
-                    foreach (var t in TerrainGrid.Instance.Totems.Values.SelectMany(x => x))
-                        if (t.AnimalData.Any(x => x.name.Equals(w, System.StringComparison.InvariantCultureIgnoreCase)))
-                            validWords.Remove(w);
+                    text += char.ToUpper(e.character);
                 }
-
-                if (words.Length != validWords.Count)
+                else if (e.character == '\n')
                 {
-                    thisSummoner.HasFailed = true;
-                    TaskManager.Instance.WaitFor(0.5f).Then(() => { thisSummoner.HasFailed = false; });
-                    audio.PlayOneShot(mistakeSound);
+                    var validWords = words.Where(x => AnimalDatabase.Get(x) != null).Distinct(StringComparer.InvariantCultureIgnoreCase).ToList();
+
+                    foreach (var w in validWords.ToArray())
+                    {
+                        foreach (var t in TerrainGrid.Instance.Totems.Values.SelectMany(x => x))
+                            if (t.AnimalData.Any(x => x.name.Equals(w, StringComparison.InvariantCultureIgnoreCase)))
+                                validWords.Remove(w);
+                    }
+
+                    if (words.Length != validWords.Count)
+                    {
+                        thisSummoner.HasFailed = true;
+                        TaskManager.Instance.WaitFor(0.5f).Then(() => { thisSummoner.HasFailed = false; });
+                        audio.PlayOneShot(mistakeSound);
+                    }
+                    else if (validWords.Count > 0)
+                    {
+                        audio.PlayOneShot(enterSound);
+                    }
+
+                    if (validWords.Count > 0)
+                        thisSummoner.TrySpawnOnServer(validWords.ToArray());
+
+                    //foreach(string word in words)
+                    //{
+                    //    if(AnimalDatabase.Get(word) != null)
+                    //    {
+                    //        print("awesoem word: " + word);
+                    //    }
+                    //}
+                    text = "";
                 }
-                else if (validWords.Count > 0)
+                else if (e.keyCode == KeyCode.Backspace && text.Length > 0)
                 {
-                    audio.PlayOneShot(enterSound);
+                    text = text.Remove(text.Length - 1);
                 }
-
-                if (validWords.Count > 0)
-                    thisSummoner.TrySpawnOnServer(validWords.ToArray());
-
-                //foreach(string word in words)
-                //{
-                //    if(AnimalDatabase.Get(word) != null)
-                //    {
-                //        print("awesoem word: " + word);
-                //    }
-                //}
-                text = "";
-            }
-            else if(e.keyCode == KeyCode.Backspace && text.Length > 0)
-            {
-                text = text.Remove(text.Length-1);
             }
         }
-
-        GUI.matrix = Matrix4x4.identity;
     }
 }

@@ -12,3 +12,6 @@
 /Builds
 
 Ressources/.DS_Store
+
+/Assembly-CSharp.pidb
+/diluvium.userprefs

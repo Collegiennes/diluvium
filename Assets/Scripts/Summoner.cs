@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class Summoner : MonoBehaviour
 {
+    public const int MaxHealth = 50;
+
     public SpawnPoint[] SpawnPoints;
     public DamageNumber WordDisplay;
     public Totem TotemPrefab;
@@ -31,7 +33,14 @@ public class Summoner : MonoBehaviour
 
     void Awake()
     {
-        Health = 20;
+        Restart();
+    }
+
+    public void Restart()
+    {
+        Health = MaxHealth;
+        HasFailed = false;
+        HasTakenDamage = false;
     }
 
     void Start()
@@ -48,7 +57,7 @@ public class Summoner : MonoBehaviour
 
     void Update()
     {
-        if (IsFakeAI)
+        if (IsFakeAI && GameFlow.State == GameState.Gameplay)
         {
             willSpawnIn -= Time.deltaTime;
             if (willSpawnIn <= 0)
@@ -174,7 +183,7 @@ public class Summoner : MonoBehaviour
         if (Health <= 0)
         {
             Health = 0;
-            if (Die != null) Die();
+            if (Die != null && GameFlow.State == GameState.Gameplay) Die();
         }
 
         audio.PlayOneShot(hurtSound);
