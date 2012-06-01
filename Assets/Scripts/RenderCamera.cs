@@ -8,7 +8,7 @@ public class RenderCamera : MonoBehaviour
 
 	void Start ()
     {
-	    texture = new RenderTexture((int)(Screen.width*0.9f), (int)(Screen.height*1.0f), 24);
+	    texture = new RenderTexture((int)(Screen.width*0.5f), (int)(Screen.height*0.5f), 24);
         texture.filterMode = FilterMode.Point;
         Camera.main.targetTexture = texture;
         renderSurface.material.mainTexture = texture;

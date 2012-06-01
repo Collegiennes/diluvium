@@ -16,6 +16,7 @@ public class CameraMotion : MonoBehaviour
     public static float PanFactor = 1;
 
     public GUIStyle textBoxStyle, labelStyle;
+    public AudioClip secretSound;
 
     int showing;
     Vector3 origin;
@@ -201,6 +202,8 @@ public class CameraMotion : MonoBehaviour
         }
 	}
 
+    bool degreelessnessMode;
+
     void OnGUI()
     {
         if (showing == 1)
@@ -211,17 +214,52 @@ public class CameraMotion : MonoBehaviour
             {
                 var isIP = Regex.IsMatch(NetworkBootstrap.Instance.ServerIP, @"((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}");
 
-                if (e.character == '\n' && (isIP || NetworkBootstrap.Instance.ServerIP.Length == 0 || NetworkBootstrap.Instance.ServerIP == "LOCAL"))
+                if (e.character == '\n')
                 {
-                    time = TransitionTime + ShowTime;
+                    if (isIP || NetworkBootstrap.Instance.ServerIP.Length == 0 || NetworkBootstrap.Instance.ServerIP == "LOCAL")
+                    {
+                        time = TransitionTime + ShowTime;
 
-                    Debug.Log("ready to connect");
-                    GameFlow.State = GameState.ReadyToConnect;
+                        if (degreelessnessMode)
+                        {
+                            if (isIP)   TerrainGrid.Instance.Summoners[1].SetIDDQD();
+                            else        TerrainGrid.Instance.Summoners[0].SetIDDQD();
+                        }
 
-                    GUI.SetNextControlName("FOCUS_REMOVER");
-                    GUI.Label(new Rect(-100, -100, 1, 1), "");
-                    GUI.FocusControl("FOCUS_REMOVER");
-                    return;
+                        Debug.Log("ready to connect");
+                        GameFlow.State = GameState.ReadyToConnect;
+                        return;
+                    }
+
+                    if (NetworkBootstrap.Instance.ServerIP == "CHIPTUNE")
+                    {
+                        audio.PlayOneShot(secretSound);
+                        TimeKeeper.Instance.IsChip = true;
+                        NetworkBootstrap.Instance.ServerIP = "";
+                        return;
+                    }
+
+                    if (NetworkBootstrap.Instance.ServerIP == "IDDQD")
+                    {
+                        audio.PlayOneShot(secretSound);
+                        degreelessnessMode = true;
+                        NetworkBootstrap.Instance.ServerIP = "";
+                        return;
+                    }
+
+                    if (NetworkBootstrap.Instance.ServerIP == "MUTE")
+                    {
+                        audio.PlayOneShot(secretSound);
+                        TimeKeeper.Instance.audio.volume = 0;
+                        NetworkBootstrap.Instance.ServerIP = "";
+                        return;
+                    }
+
+                    if (NetworkBootstrap.Instance.ServerIP == "QUIT")
+                    {
+                        Application.Quit();
+                        return;
+                    }
                 }
             }
 

@@ -9,7 +9,8 @@ class TimeKeeper : MonoBehaviour
 
     public int BeatsPerMinute = 60;
 
-    public AudioClip LoginMusic, GameplayMusic, WinMusic;
+    public AudioClip LoginMusic, GameplayMusic, WinMusic, ChipMusic;
+    public bool IsChip;
 
     float lastBeat;
 
@@ -34,10 +35,12 @@ class TimeKeeper : MonoBehaviour
             audio.Play();
         }
 
-        if (GameFlow.State == GameState.Gameplay && (audio.clip != GameplayMusic || !audio.isPlaying))
+        var gameMusic = IsChip ? ChipMusic : GameplayMusic;
+
+        if (GameFlow.State == GameState.Gameplay && (audio.clip != gameMusic || !audio.isPlaying))
         {
             audio.Stop();
-            audio.clip = GameplayMusic;
+            audio.clip = gameMusic;
             audio.Play();
         }
 

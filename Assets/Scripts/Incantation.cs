@@ -36,19 +36,19 @@ public class Incantation : MonoBehaviour
         text = string.Empty;
     }
 
-    void ShowHealthBar(float amount, Color full, Color empty)
+    void ShowHealthBar(Summoner s, Color full, Color empty)
     {
         GUILayout.BeginHorizontal();
         GUILayout.Label("HP", textStyle);
         GUILayout.FlexibleSpace();
-        GUILayout.Label(Mathf.CeilToInt(amount) + "/" + Summoner.MaxHealth, textStyle);
+        GUILayout.Label(Mathf.CeilToInt(s.Health) + "/" + s.MaxHealth, textStyle);
         GUILayout.EndHorizontal();
         GUI.color = new Color(0, 0, 0, 0.75f);
         GUILayout.BeginHorizontal(outlineStyle);
         GUI.color = full;
-        GUILayout.Box("", boxStyle, GUILayout.Width(360.0f * amount / Summoner.MaxHealth), GUILayout.Height(10));
+        GUILayout.Box("", boxStyle, GUILayout.Width(360.0f * s.Health / s.MaxHealth), GUILayout.Height(10));
         GUI.color = empty;
-        GUILayout.Box("", boxStyle, GUILayout.Width(360 * (1 - (amount / Summoner.MaxHealth))), GUILayout.Height(10));
+        GUILayout.Box("", boxStyle, GUILayout.Width(360 * (1 - (s.Health / s.MaxHealth))), GUILayout.Height(10));
         GUI.color = Color.white;
         GUILayout.EndHorizontal();
     }
@@ -89,8 +89,7 @@ public class Incantation : MonoBehaviour
 
         GUILayout.EndHorizontal();
         {
-            float health = thisSummoner.Health;
-            ShowHealthBar(health, hpGoodColor, hpBadColor);
+            ShowHealthBar(thisSummoner, hpGoodColor, hpBadColor);
         }
         GUILayout.EndArea();
 
@@ -98,8 +97,7 @@ public class Incantation : MonoBehaviour
 
         GUILayout.BeginArea(new Rect(Screen.width-414+48-20, 20, 414-48, 162));
         {
-            float health = enemySummoner.Health;
-            ShowHealthBar(health, hpEnemyGoodColor, hpEnemyBadColor);
+            ShowHealthBar(enemySummoner, hpEnemyGoodColor, hpEnemyBadColor);
         }
         GUILayout.EndArea();
 

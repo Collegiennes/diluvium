@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class Summoner : MonoBehaviour
 {
-    public const int MaxHealth = 1000;
+    public int MaxHealth = 1000;
 
     public SpawnPoint[] SpawnPoints;
     public DamageNumber WordDisplay;
@@ -54,6 +54,24 @@ public class Summoner : MonoBehaviour
         Debug.Log("reset " + PlayerId);
     }
 
+    void OnPlayerConnected()
+    {
+        if (MaxHealth == 9999)
+            networkView.RPC("SetIDDQD", RPCMode.Others);
+    }
+    void OnConnectedToServer()
+    {
+        if (MaxHealth == 9999)
+            networkView.RPC("SetIDDQD", RPCMode.Others);
+    }
+
+    [RPC]
+    public void SetIDDQD()
+    {
+        MaxHealth = 9999;
+        Health = MaxHealth;
+    }
+
     void Start()
     {
         TerrainGrid.Instance.Summoners.Add(PlayerId = (IsServerSummoner ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId),
@@ -94,8 +112,8 @@ public class Summoner : MonoBehaviour
             glowPlane.renderer.material.SetColor("_TintColor", new Color(hasDied ? 1 : 0, hasDied ? 0 : 1, 0, 0.4f - Mathf.Clamp01(sinceGameEnd / 4) * 0.4f));
         }
 
-        if (Input.GetKeyDown(KeyCode.Z) && PlayerId == 0)
-            Hurt(1000);
+        //if (Input.GetKeyDown(KeyCode.Z) && PlayerId == 0)
+        //    Hurt(1000);
     }
 
     public void TellReady()
