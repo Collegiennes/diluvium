@@ -23,10 +23,10 @@ public class CameraMotion : MonoBehaviour
     float time = -1;
     bool stop = true;
     bool enterPressed;
+    float sinceEnded;
 
     void Awake()
     {
-        transform.localRotation = Quaternion.Euler(0, 45, 0);
         origin = transform.position;
         Restart();
         showing = 0;
@@ -40,11 +40,13 @@ public class CameraMotion : MonoBehaviour
 
     void Restart()
     {
+        transform.localRotation = Quaternion.Euler(0, 45, 0);
         PanFactor = 1;
         time = -0.6f;
         stop = true;
         showing = 3; // On restart, start at the wait/sync phase
         transform.position = origin;
+        sinceEnded = 0;
 
         Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0));
         Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0.5f);
@@ -73,6 +75,8 @@ public class CameraMotion : MonoBehaviour
 	{
         if (GameFlow.State == GameState.Won)
         {
+            sinceEnded += Time.deltaTime;
+
             Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 1));
             Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0.25f);
 
@@ -86,6 +90,8 @@ public class CameraMotion : MonoBehaviour
 
         if (GameFlow.State == GameState.Lost)
         {
+            sinceEnded += Time.deltaTime;
+
             Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 1));
             Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0);
 
@@ -169,12 +175,29 @@ public class CameraMotion : MonoBehaviour
         {
             time += Time.deltaTime;
 
-            float t = Mathf.Pow(0.5f, Time.deltaTime);
-            transform.position = t * transform.position + (1 - t) * FindSceneCenter();
-
             PanFactor = 1 - Easing.EaseOut(Mathf.Clamp01(time / 3), EasingType.Quadratic);
             if (GameFlow.State == GameState.Won || GameFlow.State == GameState.Lost)
+            {
                 PanFactor = 1 - PanFactor;
+
+                var sc = FindSceneCenter();
+
+                var oldPos = transform.position;
+
+                transform.position = sc - transform.forward;
+
+                transform.RotateAround(sc, Vector3.up, Time.deltaTime * 5);
+                transform.LookAt(sc);
+                transform.position = new Vector3(transform.position.x, sc.y, transform.position.z);
+
+                float t = Mathf.Pow(0.5f, Time.deltaTime);
+                transform.position = t * oldPos + (1 - t) * transform.position;
+            }
+            else
+            {
+                float t = Mathf.Pow(0.5f, Time.deltaTime);
+                transform.position = t * transform.position + (1 - t) * FindSceneCenter();
+            }
         }
 	}
 
@@ -294,8 +317,6 @@ public class CameraMotion : MonoBehaviour
 
     Vector3 FindSceneCenter()
     {
-        if (GameFlow.State == GameState.Won || GameFlow.State == GameState.Lost) return origin;
-
         Vector3 minPos = new Vector3(100, 100, 100);
         Vector3 maxPos = new Vector3(0, 0, 0);
 
@@ -309,6 +330,8 @@ public class CameraMotion : MonoBehaviour
             }
         }
 
-        return (minPos + maxPos) / 2;
+        var center = (minPos + maxPos) / 2;
+        return Vector3.Lerp(center, origin, Easing.EaseIn(Mathf.Clamp01((sinceEnded - 2) / 3), EasingType.Cubic));
+        //return center;
     }
 }

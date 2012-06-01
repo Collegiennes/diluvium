@@ -55,7 +55,7 @@ public class Incantation : MonoBehaviour
 
     void OnGUI ()
     {
-        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 400 * CameraMotion.PanFactor, 0), Quaternion.identity, Vector3.one);
+        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 400 * CameraMotion.PanFactor + 5, 0), Quaternion.identity, Vector3.one);
 
         var textureHeight = containerStyle.normal.background.height;
 
@@ -94,7 +94,7 @@ public class Incantation : MonoBehaviour
         }
         GUILayout.EndArea();
 
-        GUI.matrix = Matrix4x4.TRS(new Vector3(0, -100 * CameraMotion.PanFactor, 0), Quaternion.identity, Vector3.one);
+        GUI.matrix = Matrix4x4.TRS(new Vector3(0, -100 * CameraMotion.PanFactor + 5, 0), Quaternion.identity, Vector3.one);
 
         GUILayout.BeginArea(new Rect(Screen.width-414+48-20, 20, 414-48, 162));
         {
@@ -103,7 +103,7 @@ public class Incantation : MonoBehaviour
         }
         GUILayout.EndArea();
 
-        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 400 * CameraMotion.PanFactor, 0), Quaternion.identity, Vector3.one);
+        GUI.matrix = Matrix4x4.TRS(new Vector3(0, 400 * CameraMotion.PanFactor + 5, 0), Quaternion.identity, Vector3.one);
 
         //GUILayout.BeginArea(new Rect(300 - 48, Screen.height - 45, 410, 25));
         //GUILayout.BeginHorizontal(hpTextStyle);

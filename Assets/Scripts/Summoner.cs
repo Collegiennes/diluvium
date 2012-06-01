@@ -21,19 +21,24 @@ public class Summoner : MonoBehaviour
     public bool IsReady { get; set; }
 
     public AudioClip hurtSound;
+    public Texture2D liveSprite, deadSprite;
 
     static readonly System.Random random = new System.Random();
     readonly List<int> TestList = new List<int>();
 
     public event Action Die;
 
+    float sinceGameEnd;
+    bool hasDied;
     int PlayerId;
+    GameObject glowPlane;
 
     // fake ai stuff
     float willSpawnIn = random.Next(4, 8);
 
     void Awake()
     {
+        glowPlane = gameObject.FindChild("GlowPlane");
         Restart();
     }
 
@@ -42,6 +47,9 @@ public class Summoner : MonoBehaviour
         Health = MaxHealth;
         HasFailed = false;
         HasTakenDamage = false;
+        sinceGameEnd = 0;
+        glowPlane.renderer.enabled = false;
+        GetComponentInChildren<Renderer>().material.mainTexture = liveSprite;
 
         Debug.Log("reset " + PlayerId);
     }
@@ -79,6 +87,15 @@ public class Summoner : MonoBehaviour
                 willSpawnIn = random.Next(4, 8);
             }
         }
+
+        if (GameFlow.State == GameState.Won || GameFlow.State == GameState.Lost)
+        {
+            sinceGameEnd += Time.deltaTime;
+            glowPlane.renderer.material.SetColor("_TintColor", new Color(hasDied ? 1 : 0, hasDied ? 0 : 1, 0, 0.4f - Mathf.Clamp01(sinceGameEnd / 4) * 0.4f));
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z) && PlayerId == 0)
+            Hurt(1000);
     }
 
     public void TellReady()
@@ -203,6 +220,17 @@ public class Summoner : MonoBehaviour
             if (Die != null && GameFlow.State == GameState.Gameplay)
             {
                 Die();
+                GetComponentInChildren<Renderer>().material.mainTexture = deadSprite;
+                foreach (var s in TerrainGrid.Instance.Summoners.Values)
+                {
+                    var plane = s.gameObject.FindChild("GlowPlane");
+                    if (s.PlayerId == (NetworkBootstrap.Instance.IsServer ? TerrainGrid.ServerPlayerId : TerrainGrid.ClientPlayerId))
+                    {
+                        plane.renderer.enabled = true;
+                        glowPlane.renderer.material.SetColor("_TintColor", new Color(0, 0, 0, 0));
+                    }
+                }
+                hasDied = true;
             }
         }
 
