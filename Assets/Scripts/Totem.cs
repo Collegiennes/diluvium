@@ -108,7 +108,7 @@ public class Totem : MonoBehaviour
 
         totemSpeed = (int) Math.Round(AnimalData.Average(x => x.speed));
         TotemIntelligence = AnimalData.Max(x => x.intelligence);
-        TotemMaxHealth = AnimalData.Sum(x => x.health);
+        TotemMaxHealth = AnimalData.Sum(x => x.health) * 20;
         TotemCurrentHealth = TotemMaxHealth;
 
         if (Network.isServer)
@@ -202,7 +202,7 @@ public class Totem : MonoBehaviour
                     {
                         attackTimeBuffers[animalId] = 0;
 
-                        var damage = AnimalData[animalId].attack / 2f * (1 + (Random.value - 0.5f) * 0.2f);
+                        var damage = AnimalData[animalId].attack * 6f * (1 + (Random.value - 0.5f) * 0.2f);
 
                         networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value, damage);
                         enemyGo.networkView.RPC("Hurt", RPCMode.Others, damage);
@@ -219,7 +219,7 @@ public class Totem : MonoBehaviour
                     {
                         attackTimeBuffers[animalId] = 0;
 
-                        var damage = AnimalData[animalId].attack / 2f * (1 + (Random.value - 0.5f) * 0.2f);
+                        var damage = AnimalData[animalId].attack * 6f * (1 + (Random.value - 0.5f) * 0.2f);
 
                         networkView.RPC("AttackWith", RPCMode.All, animalId, attackDirection.Value, damage);
                         enemyGo.networkView.RPC("Hurt", RPCMode.Others, damage);

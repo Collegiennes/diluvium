@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class Summoner : MonoBehaviour
 {
-    public const int MaxHealth = 50;
+    public const int MaxHealth = 1000;
 
     public SpawnPoint[] SpawnPoints;
     public DamageNumber WordDisplay;
@@ -18,6 +18,7 @@ public class Summoner : MonoBehaviour
     public bool HasFailed { get; set; }
     public bool HasTakenDamage { get; private set; }
     public float Health { get; private set; }
+    public bool IsReady { get; set; }
 
     public AudioClip hurtSound;
 
@@ -41,6 +42,8 @@ public class Summoner : MonoBehaviour
         Health = MaxHealth;
         HasFailed = false;
         HasTakenDamage = false;
+
+        Debug.Log("reset " + PlayerId);
     }
 
     void Start()
@@ -76,6 +79,20 @@ public class Summoner : MonoBehaviour
                 willSpawnIn = random.Next(4, 8);
             }
         }
+    }
+
+    public void TellReady()
+    {
+        IsReady = true;
+        Debug.Log("telling ready! " + PlayerId);
+        networkView.RPC("MarkReady", RPCMode.Others);
+    }
+
+    [RPC]
+    public void MarkReady()
+    {
+        Debug.Log("marking ready! " + PlayerId);
+        IsReady = true;
     }
 
     public void TrySpawnOnServer(string[] animals)
@@ -183,7 +200,10 @@ public class Summoner : MonoBehaviour
         if (Health <= 0)
         {
             Health = 0;
-            if (Die != null && GameFlow.State == GameState.Gameplay) Die();
+            if (Die != null && GameFlow.State == GameState.Gameplay)
+            {
+                Die();
+            }
         }
 
         audio.PlayOneShot(hurtSound);

@@ -9,6 +9,8 @@ class TimeKeeper : MonoBehaviour
 
     public int BeatsPerMinute = 60;
 
+    public AudioClip LoginMusic, GameplayMusic, WinMusic;
+
     float lastBeat;
 
     void Awake()
@@ -16,32 +18,31 @@ class TimeKeeper : MonoBehaviour
         Instance = this;
     }
 
-    void OnPlayerConnected()
-    {
-        if (audio.isPlaying) audio.Stop();
-        // TODO : countdown timer that acts as a preloader?
-        audio.Play();
-    }
-    void OnConnectedToServer()
-    {
-        if (audio.isPlaying) audio.Stop();
-        // TODO : countdown timer that acts as a preloader?
-        audio.Play();
-    }
-
-    void OnPlayerDisconnected()
-    {
-        if (audio.isPlaying) audio.Stop();
-    }
-    void OnDisconnectedFromServer()
-    {
-        if (audio.isPlaying) audio.Stop();
-    }
-
     void Update()
     {
-        // No need to keep time for the client... right?
-        if (!audio.isPlaying || !Network.isServer) return;
+        if (GameFlow.State == GameState.Won && (audio.clip != WinMusic || !audio.isPlaying))
+        {
+            audio.Stop();
+            audio.clip = WinMusic;
+            audio.Play();
+        }
+
+        if ((GameFlow.State < GameState.Gameplay || GameFlow.State == GameState.Lost) && (audio.clip != LoginMusic || !audio.isPlaying))
+        {
+            audio.Stop();
+            audio.clip = LoginMusic;
+            audio.Play();
+        }
+
+        if (GameFlow.State == GameState.Gameplay && (audio.clip != GameplayMusic || !audio.isPlaying))
+        {
+            audio.Stop();
+            audio.clip = GameplayMusic;
+            audio.Play();
+        }
+
+        // No need to keep time for the client... 
+        if (!audio.isPlaying || GameFlow.State != GameState.Gameplay || !Network.isServer) return;
 
         int samples = audio.timeSamples;
 

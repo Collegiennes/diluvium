@@ -5,7 +5,9 @@ public class GameFlow : MonoBehaviour
 {
     public static GameFlow Instance;
 
-    public static GameState State { get; set; }
+    public GameState state;
+
+    public static GameState State { get { return Instance.state; } set { Instance.state = value; } }
 
     public void Restart()
     {
@@ -33,7 +35,10 @@ public class GameFlow : MonoBehaviour
 
         Incantation.Instance.Restart();
 
-        State = GameState.Splash;
+        if (NetworkBootstrap.Instance.LocalMode)
+            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].MarkReady();
+
+        State = GameState.ReadyToPlay;
     }
 
     void Awake()
@@ -44,5 +49,5 @@ public class GameFlow : MonoBehaviour
 
 public enum GameState
 {
-    Splash, Gameplay, Won, Lost
+    Splash, Login, ReadyToConnect, WaitingOrConnecting, ReadyToPlay, Syncing, Gameplay, Won, Lost
 }
