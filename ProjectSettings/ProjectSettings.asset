@@ -81,7 +81,9 @@ PlayerSettings:
   iPhoneSplashScreen: {fileID: 0}
   iPhoneHighResSplashScreen: {fileID: 0}
   iPadPortraitSplashScreen: {fileID: 0}
+  iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
+  iPadHighResLandscapeSplashScreen: {fileID: 0}
   AndroidTargetDevice: 0
   AndroidTargetGraphics: 1
   AndroidSplashScreenScale: 0
@@ -108,7 +110,7 @@ PlayerSettings:
   wiiFloatingPointExceptions: 0
   wiiScreenCrashDumps: 1
   wiiMemoryLabelCount: 147
-  wiiMemorySetup: 5effbee7ffffff61f50100000000000000000000
+  wiiMemorySetup: 5effbee7ffffff75f70100000000000000000000
   XboxTitleId: 
   XboxImageXexPath: 
   XboxSpaPath: 
@@ -124,6 +126,7 @@ PlayerSettings:
   ps3TrophyCommId: 
   ps3TrophyPackagePath: 
   ps3ReservedMemorySizeMB: 2
+  ps3ReservedHDDSizeMB: 128
   flashStrippingLevel: 2
   firstStreamedLevelWithResources: 0
   unityRebuildLibraryVersion: 9

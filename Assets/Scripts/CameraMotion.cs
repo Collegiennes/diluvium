@@ -25,6 +25,7 @@ public class CameraMotion : MonoBehaviour
     bool stop = true;
     bool enterPressed;
     float sinceEnded;
+    bool isClient;
 
     void Awake()
     {
@@ -37,17 +38,22 @@ public class CameraMotion : MonoBehaviour
 	void Start()
     {
         order = new[] { Credits, Logo, Tutorial, Tutorial2 };
-	}
+
+        // debug
+        //transform.localRotation = Quaternion.Euler(0, -45, 0); 
+        //Tutorial.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
+        //Tutorial2.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
+    }
 
     void Restart()
     {
-        transform.localRotation = Quaternion.Euler(0, 45, 0);
         PanFactor = 1;
         time = -0.6f;
         stop = true;
         showing = 3; // On restart, start at the wait/sync phase
         transform.position = origin;
         sinceEnded = 0;
+        transform.localRotation = isClient ? Quaternion.Euler(0, -45, 0) : transform.localRotation = Quaternion.Euler(0, 45, 0);
 
         Tutorial.renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0));
         Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0.5f);
@@ -65,6 +71,9 @@ public class CameraMotion : MonoBehaviour
     void OnConnectedToServer()
     {
         transform.localRotation = Quaternion.Euler(0, -45, 0);
+        Tutorial.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
+        Tutorial2.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
+        isClient = true;
         TaskManager.Instance.WaitUntil(_ => TerrainGrid.Instance.Summoners.Count == 2).Then(() =>
         {
             TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { GameFlow.State = GameState.Won; time = 0; foreach (var s in TerrainGrid.Instance.Summoners.Values) s.IsReady = false; };
