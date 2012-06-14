@@ -185,9 +185,8 @@ Kudu,Antelope,,,,,,,0
 Lark ,Bird,,,,,,,0
 Lemming,Groundhog,,,,,,,0
 Lemur ,Loris,,,,,,,0
-Lion ,Cat,,,,,,,
 Lobster ,Crab,,,,,,,0
-Lynx,Cat,,,,,,,0
+Lynx,Leopard,,,,,,,0
 Lyrebird ,Bird,,,,,,,0
 Macaque,Ape,,,,,,,0
 Magpie ,Bird,,,,,,,0
@@ -283,4 +282,16 @@ Bedard,Renaud,,,,,,,0
 Boom,Henk,,,,,,,0
 Hippocampus,Seahorse,,,,,,,0
 Renaudbedard,Renaud,,,,,,,0
-,,,,,,,,0
+Snapper,Fish,,,,,,,0
+Chocobo,Chinchilla,,,,,,,
+Tuna,Fish,,,,,,,
+Ray,Eel,,,,,,,
+Manta,Eel,,,,,,,
+Barracuda,Fish,,,,,,,
+Rockfish,Fish,,,,,,,
+Sailfish,Fish,,,,,,,
+Marlin,Fish,,,,,,,
+Piranha,Shark,,,,,,,
+Chimp,Ape,,,,,,,
+Gibbon,Gorilla,,,,,,,
+Wildcat,Cat,,,,,,,

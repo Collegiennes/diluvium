@@ -34,7 +34,7 @@ public class Summoner : MonoBehaviour
     GameObject glowPlane;
 
     // fake ai stuff
-    float willSpawnIn = random.Next(4, 8);
+    float willSpawnIn = random.Next(6, 12);
 
     void Awake()
     {
@@ -102,7 +102,7 @@ public class Summoner : MonoBehaviour
                 if (count == 2) TrySpawn(firstAnimal.ToUpper(), secondAnimal.ToUpper(), "");
                 if (count == 3) TrySpawn(firstAnimal.ToUpper(), secondAnimal.ToUpper(), thirdAnimal.ToUpper());
 
-                willSpawnIn = random.Next(4, 8);
+                willSpawnIn = random.Next(6, 12);
             }
         }
 
