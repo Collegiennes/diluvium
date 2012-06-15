@@ -23,9 +23,11 @@ public class CameraMotion : MonoBehaviour
     GameObject[] order;
     float time = -1;
     bool stop = true;
-    bool enterPressed;
+    bool enterPressed, escPressed;
     float sinceEnded;
     bool isClient;
+    string inputString = "";
+    string playerName = "ANON";
 
     void Awake()
     {
@@ -43,6 +45,35 @@ public class CameraMotion : MonoBehaviour
         //transform.localRotation = Quaternion.Euler(0, -45, 0); 
         //Tutorial.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
         //Tutorial2.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
+    }
+
+    void RestartToSplash()
+    {
+        Debug.Log("Restarting to splash");
+
+        inputString = "";
+
+        TerrainGrid.Instance.Summoners[1].SetIDDQD(false);
+        TerrainGrid.Instance.Summoners[0].SetIDDQD(false);
+
+        degreelessnessMode = false;
+
+        isClient = false;
+
+        GameFlow.Instance.Restart();
+
+        if (showing <= 3)
+            order[showing].renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0));
+
+        Restart();
+
+        Tutorial.renderer.material.mainTextureOffset = new Vector2(0, 0.75f);
+        showing = 1;
+        time = 0;
+
+        GameFlow.State = GameState.Login;
+        if (NetworkBootstrap.Instance.IsServer)
+            Network.Disconnect();
     }
 
     void Restart()
@@ -83,6 +114,13 @@ public class CameraMotion : MonoBehaviour
 
 	void Update()
 	{
+        if (GameFlow.State >= GameState.WaitingOrConnecting && (Input.GetKeyDown(KeyCode.Escape) || escPressed))
+        {
+            escPressed = false;
+            RestartToSplash();
+            return;
+        }
+
         if (GameFlow.State == GameState.Won)
         {
             sinceEnded += Time.deltaTime;
@@ -221,50 +259,65 @@ public class CameraMotion : MonoBehaviour
             Event e = Event.current;
             if (e.type == EventType.KeyDown && time > TransitionTime / 4 && GameFlow.State == GameState.Login)
             {
-                var isIP = Regex.IsMatch(NetworkBootstrap.Instance.ServerIP, @"((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}");
-
                 if (e.character == '\n')
                 {
-                    if (isIP || NetworkBootstrap.Instance.ServerIP.Length == 0 || NetworkBootstrap.Instance.ServerIP == "LOCAL")
+                    var split = inputString.Trim().Split(' ');
+
+                    if (inputString == "LOCAL" || ((inputString.StartsWith("JOIN") || inputString.StartsWith("HOST")) && split.Length <= 2))
                     {
                         time = TransitionTime + ShowTime;
 
                         if (degreelessnessMode)
                         {
-                            if (isIP)   TerrainGrid.Instance.Summoners[1].SetIDDQD();
-                            else        TerrainGrid.Instance.Summoners[0].SetIDDQD();
+                            if (inputString.StartsWith("JOIN")) TerrainGrid.Instance.Summoners[1].SetIDDQD(degreelessnessMode);
+                            else                                    TerrainGrid.Instance.Summoners[0].SetIDDQD(degreelessnessMode);
                         }
 
-                        Debug.Log("ready to connect");
+                        NetworkBootstrap.Instance.GameName = split.Length == 1 ? Guid.NewGuid().ToString() : split[1].Trim();
+                        NetworkBootstrap.Instance.IsServer = split[0].Trim() == "HOST";
+                        NetworkBootstrap.Instance.LocalMode = split[0].Trim() == "LOCAL";
+
+                        if (NetworkBootstrap.Instance.LocalMode)    Debug.Log("Local mode");
+                        if (NetworkBootstrap.Instance.IsServer)     Debug.Log("Server mode");
+                        Debug.Log("Game name" + NetworkBootstrap.Instance.GameName);
+
                         GameFlow.State = GameState.ReadyToConnect;
                         return;
                     }
 
-                    if (NetworkBootstrap.Instance.ServerIP == "CHIPTUNE")
+                    if (inputString.StartsWith("NICK") && split.Length == 2)
+                    {
+                        audio.PlayOneShot(secretSound);
+                        playerName = split[1].Trim();
+                        inputString = "";
+                        return;
+                    }
+
+                    if (inputString == "CHIPTUNE")
                     {
                         audio.PlayOneShot(secretSound);
                         TimeKeeper.Instance.IsChip = true;
-                        NetworkBootstrap.Instance.ServerIP = "";
+                        inputString = "";
                         return;
                     }
 
-                    if (NetworkBootstrap.Instance.ServerIP == "IDDQD")
+                    if (inputString == "IDDQD")
                     {
                         audio.PlayOneShot(secretSound);
                         degreelessnessMode = true;
-                        NetworkBootstrap.Instance.ServerIP = "";
+                        inputString = "";
                         return;
                     }
 
-                    if (NetworkBootstrap.Instance.ServerIP == "MUTE")
+                    if (inputString == "MUTE")
                     {
                         audio.PlayOneShot(secretSound);
                         TimeKeeper.Instance.audio.volume = 0;
-                        NetworkBootstrap.Instance.ServerIP = "";
+                        inputString = "";
                         return;
                     }
 
-                    if (NetworkBootstrap.Instance.ServerIP == "QUIT")
+                    if (inputString == "QUIT" || inputString == "EXIT" || inputString == "BYE")
                     {
                         Application.Quit();
                         return;
@@ -281,13 +334,12 @@ public class CameraMotion : MonoBehaviour
             var boxLeft = Screen.width / 2f - 223 / 2 - 10 / 2;
 
             GUI.SetNextControlName("IP Box");
-            NetworkBootstrap.Instance.ServerIP = GUI.TextField(new Rect(boxLeft, logoBottom + 50, 223 + 10, 42 + 10), NetworkBootstrap.Instance.ServerIP, 15, textBoxStyle);
-            NetworkBootstrap.Instance.ServerIP = Regex.Replace(NetworkBootstrap.Instance.ServerIP, @"\s+", "").ToUpper();
+            inputString = GUI.TextField(new Rect(boxLeft, logoBottom + 50, 223 + 10, 42 + 10), inputString, 100, textBoxStyle).ToUpper().Replace("\n", "");
 
-            if (NetworkBootstrap.Instance.ServerIP.Length == 0)
+            if (inputString.StartsWith("JOIN"))
             {
-                var bigText = "HOSTING";
-                var smallText = "LOCAL " + NetworkBootstrap.Instance.LanIP + "\nINTERNET " + NetworkBootstrap.Instance.WanIP;
+                var bigText = "CONNECT";
+                var smallText = "JOIN <game name>\nENTER TO JOIN";
                 labelStyle.fontSize = 23;
                 var size = labelStyle.CalcSize(new GUIContent(bigText));
                 labelStyle.normal.textColor = new Color(0.5f, 1, 0, step);
@@ -297,10 +349,10 @@ public class CameraMotion : MonoBehaviour
                 labelStyle.fontSize = 12;
                 GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 200, 200), smallText, labelStyle);
             }
-            else if (Regex.IsMatch(NetworkBootstrap.Instance.ServerIP, @"((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}"))
+            else if (inputString.StartsWith("HOST"))
             {
-                var bigText = "CONNECT";
-                var smallText = "ENTER TO CONNECT TO\n" + NetworkBootstrap.Instance.ServerIP;
+                var bigText = "HOSTING";
+                var smallText = "HOST <game name>\nENTER TO CREATE";
                 labelStyle.fontSize = 23;
                 var size = labelStyle.CalcSize(new GUIContent(bigText));
                 labelStyle.normal.textColor = new Color(0.5f, 1, 0, step);
@@ -309,11 +361,37 @@ public class CameraMotion : MonoBehaviour
                 labelStyle.normal.textColor = new Color(1f, 1, 1, step);
                 labelStyle.fontSize = 12;
                 GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 200, 200), smallText, labelStyle);
+            }
+            else if (inputString.StartsWith("LOCAL"))
+            {
+                var bigText = "LOCAL";
+                var smallText = "SINGLE PLAYER\nENTER TO PLAY AGAINST A.I.";
+                labelStyle.fontSize = 23;
+                var size = labelStyle.CalcSize(new GUIContent(bigText));
+                labelStyle.normal.textColor = new Color(0.5f, 1, 0, step);
+                labelStyle.alignment = TextAnchor.UpperLeft;
+                GUI.Label(new Rect(boxLeft, logoBottom + 108, size.x, size.y), bigText, labelStyle);
+                labelStyle.normal.textColor = new Color(1f, 1, 1, step);
+                labelStyle.fontSize = 12;
+                GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 200, 200), smallText, labelStyle);
+            }
+            else if (inputString.StartsWith("NICK"))
+            {
+                var bigText = "ALIAS";
+                var smallText = "NICK <nickname>\nENTER TO CHANGE (CURRENT : " + playerName + ")";
+                labelStyle.fontSize = 23;
+                var size = labelStyle.CalcSize(new GUIContent(bigText));
+                labelStyle.normal.textColor = new Color(0.5f, 1, 0, step);
+                labelStyle.alignment = TextAnchor.UpperLeft;
+                GUI.Label(new Rect(boxLeft, logoBottom + 108, size.x, size.y), bigText, labelStyle);
+                labelStyle.normal.textColor = new Color(1f, 1, 1, step);
+                labelStyle.fontSize = 12;
+                GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 300, 200), smallText, labelStyle);
             }
             else
             {
                 var bigText = "TYPE";
-                var smallText = "'LOCAL' FOR SINGLE PLAYER\nAN IP ADDRESS FOR MULTIPLAYER";
+                var smallText = "LOCAL, HOST, JOIN,\nNICK, MUTE, QUIT...";
                 labelStyle.fontSize = 23;
                 var size = labelStyle.CalcSize(new GUIContent(bigText));
                 labelStyle.normal.textColor = new Color(1, 0, 0, step);
@@ -321,7 +399,7 @@ public class CameraMotion : MonoBehaviour
                 GUI.Label(new Rect(boxLeft, logoBottom + 108, size.x, size.y), bigText, labelStyle);
                 labelStyle.normal.textColor = new Color(1f, 1, 1, step);
                 labelStyle.fontSize = 12;
-                GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 200, 200), smallText, labelStyle);
+                GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 300, 200), smallText, labelStyle);
             }
 
             GUI.color = Color.white;
@@ -334,6 +412,7 @@ public class CameraMotion : MonoBehaviour
         {
             enterPressed = Event.current.character == '\n';
         }
+        escPressed = Event.current.keyCode == KeyCode.Escape;
 
         if (showing == 3)
         {
@@ -349,7 +428,7 @@ public class CameraMotion : MonoBehaviour
 
             string text = "";
             if (GameFlow.State == GameState.WaitingOrConnecting)
-                text = NetworkBootstrap.Instance.IsServer ? "WAITING FOR PLAYER TO CONNECT..." : "CONNECTING TO OTHER PLAYER...";
+                text = NetworkBootstrap.Instance.IsServer ? "WAITING FOR PLAYER TO CONNECT... (ESCAPE TO CANCEL)" : "CONNECTING TO OTHER PLAYER... (ESCAPE TO CANCEL)";
             else if (GameFlow.State == GameState.Syncing)
                 text = "WAITING FOR OTHER PLAYER TO START...";
             else if (GameFlow.State == GameState.ReadyToPlay)
@@ -358,7 +437,7 @@ public class CameraMotion : MonoBehaviour
             labelStyle.fontSize = (int) Math.Round(24 / 800f * Screen.height);
             labelStyle.normal.textColor = new Color(0.55f, 0.55f, 0.55f, step);
             labelStyle.alignment = TextAnchor.UpperLeft;
-            GUI.Label(new Rect(left, top, 500, 100), text, labelStyle);
+            GUI.Label(new Rect(left, top, 600, 100), text, labelStyle);
         }
     }
 

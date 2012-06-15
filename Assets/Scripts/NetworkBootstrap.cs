@@ -7,13 +7,19 @@ using System.Threading;
 using Mono.Nat;
 using UnityEngine;
 
-public class NetworkBootstrap : MonoBehaviour 
+public class NetworkBootstrap : MonoBehaviour
 {
-    public string ServerIP = "192.168.0.2";
-    public string WanIP;
-    public string LanIP;
+    const string Version = "1.1";
+
+    public string ServerName;
+
+    //public string WanIP;
+    //public string LanIP;
+
     public bool IsServer { get; set; }
     public const int Port = 10000;
+
+    public string GameName;
 
     NetworkPeerType PeerType;
     bool waitingForClient;
@@ -29,17 +35,17 @@ public class NetworkBootstrap : MonoBehaviour
     {
         Instance = this;
 
-        try
-        {
-            LanIP = Dns.GetHostAddresses(Dns.GetHostName()).First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
-        }
-        catch (Exception ex)
-        {
-            Debug.Log("Failed to get internal IP :\n" + ex.ToString());
-            LanIP = "UNKNOWN";
-        }
+        //try
+        //{
+        //    LanIP = Dns.GetHostAddresses(Dns.GetHostName()).First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
+        //}
+        //catch (Exception ex)
+        //{
+        //    Debug.Log("Failed to get internal IP :\n" + ex.ToString());
+        //    LanIP = "UNKNOWN";
+        //}
 
-        WanIP = GetIP();
+        //WanIP = GetIP();
     }
 
     void Start()
@@ -48,22 +54,22 @@ public class NetworkBootstrap : MonoBehaviour
         {
             natDevice = ea.Device;
 
-            string externalIp;
-            try
-            {
-                externalIp = natDevice.GetExternalIP().ToString();
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("Failed to get external IP :\n" + ex.ToString());
-                externalIp = "UNKNOWN";
-            }
+            //string externalIp;
+            //try
+            //{
+            //    externalIp = natDevice.GetExternalIP().ToString();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.Log("Failed to get external IP :\n" + ex.ToString());
+            //    externalIp = "UNKNOWN";
+            //}
 
-            if (WanIP == "UNKNOWN")
-            {
-                Debug.Log("Reverted to UPnP device's external IP");
-                WanIP = externalIp;
-            }
+            //if (WanIP == "UNKNOWN")
+            //{
+            //    Debug.Log("Reverted to UPnP device's external IP");
+            //    WanIP = externalIp;
+            //}
         };
         NatUtility.DeviceLost += (s, ea) => { natDevice = null; };
 
@@ -90,8 +96,7 @@ public class NetworkBootstrap : MonoBehaviour
         }
         NatUtility.StopDiscovery();
 
-        if (Network.isServer)
-            MasterServer.UnregisterHost();
+        CloseServer();
 
         natDevice = null;
     }
@@ -100,59 +105,37 @@ public class NetworkBootstrap : MonoBehaviour
     {
         if (GameFlow.State == GameState.ReadyToConnect)
         {
-            if (ServerIP.Trim() == string.Empty)
-                IsServer = true;
-
-            if (IsServer)
-            {
-                CreateServer();
-                GameFlow.State = GameState.WaitingOrConnecting;
-            }
-            else if (ServerIP == "LOCAL")
+            if (LocalMode)
             {
                 PeerType = NetworkPeerType.Disconnected;
 
-                LocalMode = true;
                 IsServer = true;
-
                 CreateServer();
                 TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].IsFakeAI = true;
                 TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].MarkReady();
                 GameFlow.State = GameState.ReadyToPlay;
             }
-            else
+            else if (IsServer)
             {
-                ConnectToServer();
+                CreateServer();
+                GameFlow.State = GameState.WaitingOrConnecting;
             }
+            else
+                ConnectToServer();
         }
     }
 
-    void OnGUI()
-    {
-        //switch (PeerType)
-        //{
-        //    case NetworkPeerType.Disconnected:
-        //        GUILayout.Label("Disconnected : " + errorMessage);
-        //        break;
-
-        //    case NetworkPeerType.Connecting:
-        //        GUILayout.Label("Connecting...");
-        //        break;
-
-        //    case NetworkPeerType.Server:
-        //        if (waitingForClient && !LocalMode)
-        //        {
-        //            GUILayout.Label("Waiting for client...");
-        //        }
-        //        break;
-
-        //    case NetworkPeerType.Client:
-        //        // Nothing?
-        //        break;
-        //}
-    }
-
     #region Server
+
+    public void CloseServer()
+    {
+        if (Network.isServer)
+        {
+            Network.Disconnect();
+            MasterServer.UnregisterHost();
+        }
+        IsServer = false;
+    }
 
     static string GetIP()
     {
@@ -233,14 +216,15 @@ public class NetworkBootstrap : MonoBehaviour
     void CreateServer()
     {
         // Try UPnP port mapping nonetheless
-        if (!Network.HavePublicAddress())
+        if (!Network.HavePublicAddress() && !LocalMode)
             MapPort();
 
-        var result = Network.InitializeServer(3, Port, !Network.HavePublicAddress());
+        var result = Network.InitializeServer(2, Port, !Network.HavePublicAddress() && !LocalMode);
         if (result == NetworkConnectionError.NoError)
         {
             PeerType = NetworkPeerType.Server;
-            MasterServer.RegisterHost("Diluvium", "1.1", WanIP);
+            if (!LocalMode)
+                MasterServer.RegisterHost("Diluvium", GameName, "1.1");
             waitingForClient = true;
         }
         else
@@ -266,8 +250,6 @@ public class NetworkBootstrap : MonoBehaviour
 
         waitingForClient = true;
         // TODO : make sure that the game ends? (done in each component?)
-
-        Application.Quit();
     }
 
     #endregion
@@ -278,27 +260,11 @@ public class NetworkBootstrap : MonoBehaviour
     {
         Debug.Log("connection attempt will start");
 
-        MasterServer.RequestHostList("Diluvium");
-        HostData chosenHost = null;
-        foreach (var host in MasterServer.PollHostList())
+        var isIp = (new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b")).IsMatch(GameName);
+
+        if (isIp)
         {
-            Debug.Log("Server found : " + " version " + host.gameName + ", IP = " + host.comment);
-            if (host.comment == ServerIP && host.gameName == "1.1")
-            {
-                Debug.Log("Found host");
-                chosenHost = host;
-                break;
-            }
-        }
-        if (chosenHost == null)
-        {
-            errorMessage = "Couldn't connect to server (reason : not present in master server) -- will retry in 2 seconds...";
-            TaskManager.Instance.WaitFor(2).Then(() => GameFlow.State = GameState.ReadyToConnect);
-        }
-        else
-        {
-            chosenHost.useNat = true;
-            var result = Network.Connect(chosenHost.guid);
+            var result = Network.Connect(GameName, Port);
             if (result == NetworkConnectionError.NoError)
                 PeerType = NetworkPeerType.Connecting;
             else
@@ -309,17 +275,59 @@ public class NetworkBootstrap : MonoBehaviour
                 Debug.Log(errorMessage);
             }
         }
+        else
+        {
+            MasterServer.RequestHostList("Diluvium");
+            HostData chosenHost = null;
+            foreach (var host in MasterServer.PollHostList())
+            {
+                Debug.Log("Server found : " + " | game name : " + host.gameName + ", version = " + host.comment);
+                if (host.gameName == GameName && host.comment == Version)
+                {
+                    Debug.Log("Found host");
+                    chosenHost = host;
+                    break;
+                }
+            }
+            if (chosenHost == null)
+            {
+                errorMessage = "Couldn't connect to server (reason : not present in master server) -- will retry in 2 seconds...";
+                TaskManager.Instance.WaitFor(2).Then(() => GameFlow.State = GameState.ReadyToConnect);
+                Debug.Log(errorMessage);
+            }
+            else
+            {
+                chosenHost.useNat = true;
+                var result = Network.Connect(chosenHost.guid);
+                if (result == NetworkConnectionError.NoError)
+                    PeerType = NetworkPeerType.Connecting;
+                else
+                {
+                    PeerType = NetworkPeerType.Disconnected;
+                    errorMessage = "Couldn't connect to server (reason : " + result + ") -- will retry in 2 seconds...";
+                    TaskManager.Instance.WaitFor(2).Then(() => GameFlow.State = GameState.ReadyToConnect);
+                    Debug.Log(errorMessage);
+                }
+            }
+        }
 
         GameFlow.State = GameState.WaitingOrConnecting;
     }
 
     void OnFailedToConnect(NetworkConnectionError error)
     {
+        if (IsServer) return; // Failed to connect to master server
+
         PeerType = NetworkPeerType.Disconnected;
         errorMessage = "Couldn't connect to server (reason : " + error + ") -- will retry in 2 seconds...";
         Debug.Log(errorMessage);
 
         TaskManager.Instance.WaitFor(2).Then(() => GameFlow.State = GameState.ReadyToConnect);
+    }
+
+    void OnFailedToConnectToMasterServer(NetworkConnectionError info)
+    {
+        Debug.Log("Could not connect to master server: " + info);
     }
 
     void OnConnectedToServer()
@@ -334,8 +342,6 @@ public class NetworkBootstrap : MonoBehaviour
         PeerType = NetworkPeerType.Disconnected;
         errorMessage = "Disconnected from server (reason : " + info + ")";
         // TODO : prompt for reconnection?
-
-        Application.Quit();
     }
 
     #endregion

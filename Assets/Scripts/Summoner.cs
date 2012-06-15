@@ -32,6 +32,7 @@ public class Summoner : MonoBehaviour
     bool hasDied;
     int PlayerId;
     GameObject glowPlane;
+    bool isIddqd;
 
     // fake ai stuff
     float willSpawnIn = random.Next(6, 12);
@@ -56,20 +57,27 @@ public class Summoner : MonoBehaviour
 
     void OnPlayerConnected()
     {
-        if (MaxHealth == 9999)
-            networkView.RPC("SetIDDQD", RPCMode.Others);
+        networkView.RPC("SetIDDQD", RPCMode.Others, isIddqd);
     }
     void OnConnectedToServer()
     {
-        if (MaxHealth == 9999)
-            networkView.RPC("SetIDDQD", RPCMode.Others);
+        networkView.RPC("SetIDDQD", RPCMode.Others, isIddqd);
     }
 
     [RPC]
-    public void SetIDDQD()
+    public void SetIDDQD(bool iddqd)
     {
-        MaxHealth = 9999;
-        Health = MaxHealth;
+        isIddqd = iddqd;
+        if (iddqd)
+        {
+            MaxHealth = 9999;
+            Health = MaxHealth;
+        }
+        else
+        {
+            MaxHealth = 1000;
+            Health = MaxHealth;
+        }
     }
 
     void Start()
