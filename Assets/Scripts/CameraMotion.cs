@@ -78,9 +78,12 @@ public class CameraMotion : MonoBehaviour
 
         GameFlow.State = GameState.Login;
         var wasServer = NetworkBootstrap.Instance.IsServer;
-        NetworkBootstrap.Instance.IsServer = false;
+        var wasClient = NetworkBootstrap.Instance.IsClient;
 
-        if (wasServer || Network.connections.Length > 0)
+        NetworkBootstrap.Instance.IsServer = false;
+        NetworkBootstrap.Instance.IsClient = false;
+
+        if (wasServer || wasClient)
             Network.Disconnect();
     }
 

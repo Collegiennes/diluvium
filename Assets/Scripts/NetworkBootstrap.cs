@@ -16,6 +16,7 @@ public class NetworkBootstrap : MonoBehaviour
     //public string WanIP;
     //public string LanIP;
 
+    public bool IsClient { get; set; }
     public bool IsServer { get; set; }
     public const int Port = 10000;
 
@@ -109,6 +110,7 @@ public class NetworkBootstrap : MonoBehaviour
             {
                 PeerType = NetworkPeerType.Disconnected;
 
+                IsClient = false;
                 IsServer = true;
                 CreateServer();
                 TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].IsFakeAI = true;
@@ -117,11 +119,15 @@ public class NetworkBootstrap : MonoBehaviour
             }
             else if (IsServer)
             {
+                IsClient = false;
                 CreateServer();
                 GameFlow.State = GameState.WaitingOrConnecting;
             }
             else
+            {
                 ConnectToServer();
+                IsClient = true;
+            }
         }
     }
 
