@@ -80,7 +80,7 @@ public class CameraMotion : MonoBehaviour
         var wasServer = NetworkBootstrap.Instance.IsServer;
         NetworkBootstrap.Instance.IsServer = false;
 
-        if (wasServer)
+        if (wasServer || Network.connections.Length > 0)
             Network.Disconnect();
     }
 
