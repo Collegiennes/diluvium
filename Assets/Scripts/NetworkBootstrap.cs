@@ -279,10 +279,11 @@ public class NetworkBootstrap : MonoBehaviour
         {
             MasterServer.RequestHostList("Diluvium");
             HostData chosenHost = null;
-            foreach (var host in MasterServer.PollHostList())
+
+            foreach (var host in MasterServer.PollHostList().OrderBy(a => Guid.NewGuid()))
             {
                 Debug.Log("Server found : " + " | game name : " + host.gameName + ", version = " + host.comment);
-                if (host.gameName == GameName && host.comment == Version)
+                if ((host.gameName == GameName || GameName == string.Empty) && host.comment == Version)
                 {
                     Debug.Log("Found host");
                     chosenHost = host;

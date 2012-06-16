@@ -270,12 +270,15 @@ public class CameraMotion : MonoBehaviour
                         if (degreelessnessMode)
                         {
                             if (inputString.StartsWith("JOIN")) TerrainGrid.Instance.Summoners[1].SetIDDQD(degreelessnessMode);
-                            else                                    TerrainGrid.Instance.Summoners[0].SetIDDQD(degreelessnessMode);
+                            else                                TerrainGrid.Instance.Summoners[0].SetIDDQD(degreelessnessMode);
                         }
 
                         NetworkBootstrap.Instance.GameName = split.Length == 1 ? Guid.NewGuid().ToString() : split[1].Trim();
                         NetworkBootstrap.Instance.IsServer = split[0].Trim() == "HOST";
                         NetworkBootstrap.Instance.LocalMode = split[0].Trim() == "LOCAL";
+
+                        if (!NetworkBootstrap.Instance.IsServer && split.Length == 1)
+                            NetworkBootstrap.Instance.GameName = string.Empty;
 
                         if (NetworkBootstrap.Instance.LocalMode)    Debug.Log("Local mode");
                         if (NetworkBootstrap.Instance.IsServer)     Debug.Log("Server mode");
