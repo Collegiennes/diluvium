@@ -34,6 +34,8 @@ public class Summoner : MonoBehaviour
     GameObject glowPlane;
     bool isIddqd;
 
+    int minSpawn = 6, maxSpawn = 12;
+
     // fake ai stuff
     float willSpawnIn = random.Next(6, 12);
 
@@ -41,6 +43,11 @@ public class Summoner : MonoBehaviour
     {
         glowPlane = gameObject.FindChild("GlowPlane");
         Restart();
+    }
+
+    public void ResetEvents()
+    {
+        Die = null;
     }
 
     public void Restart()
@@ -92,6 +99,25 @@ public class Summoner : MonoBehaviour
         gridCell.Occupant = gameObject;
     }
 
+    public void IncreaseDifficulty()
+    {
+        Debug.Log("Diffuculty increased");
+        minSpawn = Mathf.RoundToInt(minSpawn * 3 / 4f);
+        maxSpawn = Mathf.RoundToInt(maxSpawn * 3 / 4f);
+    }
+    public void DecreaseDifficulty()
+    {
+        Debug.Log("Diffuculty decreased");
+        minSpawn = Mathf.RoundToInt(minSpawn * 4 / 3f);
+        maxSpawn = Mathf.RoundToInt(maxSpawn * 4 / 3f);
+    }
+    public void ResetDifficulty()
+    {
+        Debug.Log("Diffuculty reset");
+        maxSpawn = 12;
+        minSpawn = 6;
+    }
+
     void Update()
     {
         if (IsFakeAI && GameFlow.State == GameState.Gameplay)
@@ -110,7 +136,7 @@ public class Summoner : MonoBehaviour
                 if (count == 2) TrySpawn(firstAnimal.ToUpper(), secondAnimal.ToUpper(), "");
                 if (count == 3) TrySpawn(firstAnimal.ToUpper(), secondAnimal.ToUpper(), thirdAnimal.ToUpper());
 
-                willSpawnIn = random.Next(6, 12);
+                willSpawnIn = random.Next(minSpawn, maxSpawn);
             }
         }
 

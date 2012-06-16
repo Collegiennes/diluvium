@@ -51,10 +51,15 @@ public class CameraMotion : MonoBehaviour
     {
         Debug.Log("Restarting to splash");
 
+        TaskManager.Instance.StopAllTaskQueues();
+
         inputString = "";
 
         TerrainGrid.Instance.Summoners[1].SetIDDQD(false);
         TerrainGrid.Instance.Summoners[0].SetIDDQD(false);
+        TerrainGrid.Instance.Summoners[1].ResetEvents();
+        TerrainGrid.Instance.Summoners[0].ResetEvents();
+        TerrainGrid.Instance.Summoners[1].ResetDifficulty();
 
         degreelessnessMode = false;
 
@@ -72,7 +77,10 @@ public class CameraMotion : MonoBehaviour
         time = 0;
 
         GameFlow.State = GameState.Login;
-        if (NetworkBootstrap.Instance.IsServer)
+        var wasServer = NetworkBootstrap.Instance.IsServer;
+        NetworkBootstrap.Instance.IsServer = false;
+
+        if (wasServer)
             Network.Disconnect();
     }
 
@@ -92,15 +100,16 @@ public class CameraMotion : MonoBehaviour
 
     void OnServerInitialized()
     {
-        //Debug.Log("server init");
+        Debug.Log("Registering server events");
         TaskManager.Instance.WaitUntil(_ => TerrainGrid.Instance.Summoners.Count == 2).Then(() =>
         {
-            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { GameFlow.State = GameState.Won; time = 0; foreach (var s in TerrainGrid.Instance.Summoners.Values) s.IsReady = false; };
-            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { GameFlow.State = GameState.Lost; time = 0; foreach (var s in TerrainGrid.Instance.Summoners.Values) s.IsReady = false; };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].Die += () => { GameFlow.State = GameState.Won; time = 0; foreach (var s in TerrainGrid.Instance.Summoners.Values) s.IsReady = false; if (NetworkBootstrap.Instance.LocalMode) TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].IncreaseDifficulty(); };
+            TerrainGrid.Instance.Summoners[TerrainGrid.ServerPlayerId].Die += () => { GameFlow.State = GameState.Lost; time = 0; foreach (var s in TerrainGrid.Instance.Summoners.Values) s.IsReady = false; if (NetworkBootstrap.Instance.LocalMode) TerrainGrid.Instance.Summoners[TerrainGrid.ClientPlayerId].DecreaseDifficulty(); };
         });
     }
     void OnConnectedToServer()
     {
+        Debug.Log("Registering client events");
         transform.localRotation = Quaternion.Euler(0, -45, 0);
         Tutorial.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
         Tutorial2.transform.position = new Vector3(6.3f, 16.8f, 2.82f);
@@ -288,13 +297,13 @@ public class CameraMotion : MonoBehaviour
                         return;
                     }
 
-                    if (inputString.StartsWith("NICK") && split.Length == 2)
-                    {
-                        audio.PlayOneShot(secretSound);
-                        playerName = split[1].Trim();
-                        inputString = "";
-                        return;
-                    }
+                    //if (inputString.StartsWith("NICK") && split.Length == 2)
+                    //{
+                    //    audio.PlayOneShot(secretSound);
+                    //    playerName = split[1].Trim();
+                    //    inputString = "";
+                    //    return;
+                    //}
 
                     if (inputString == "CHIPTUNE")
                     {
@@ -378,23 +387,23 @@ public class CameraMotion : MonoBehaviour
                 labelStyle.fontSize = 12;
                 GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 200, 200), smallText, labelStyle);
             }
-            else if (inputString.StartsWith("NICK"))
-            {
-                var bigText = "ALIAS";
-                var smallText = "NICK <nickname>\nENTER TO CHANGE (CURRENT : " + playerName + ")";
-                labelStyle.fontSize = 23;
-                var size = labelStyle.CalcSize(new GUIContent(bigText));
-                labelStyle.normal.textColor = new Color(0.5f, 1, 0, step);
-                labelStyle.alignment = TextAnchor.UpperLeft;
-                GUI.Label(new Rect(boxLeft, logoBottom + 108, size.x, size.y), bigText, labelStyle);
-                labelStyle.normal.textColor = new Color(1f, 1, 1, step);
-                labelStyle.fontSize = 12;
-                GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 300, 200), smallText, labelStyle);
-            }
+            //else if (inputString.StartsWith("NICK"))
+            //{
+            //    var bigText = "ALIAS";
+            //    var smallText = "NICK <nickname>\nENTER TO CHANGE (CURRENT : " + playerName + ")";
+            //    labelStyle.fontSize = 23;
+            //    var size = labelStyle.CalcSize(new GUIContent(bigText));
+            //    labelStyle.normal.textColor = new Color(0.5f, 1, 0, step);
+            //    labelStyle.alignment = TextAnchor.UpperLeft;
+            //    GUI.Label(new Rect(boxLeft, logoBottom + 108, size.x, size.y), bigText, labelStyle);
+            //    labelStyle.normal.textColor = new Color(1f, 1, 1, step);
+            //    labelStyle.fontSize = 12;
+            //    GUI.Label(new Rect(boxLeft + size.x + 8, logoBottom + 108, 300, 200), smallText, labelStyle);
+            //}
             else
             {
                 var bigText = "TYPE";
-                var smallText = "LOCAL, HOST, JOIN,\nNICK, MUTE, QUIT...";
+                var smallText = "LOCAL, HOST, JOIN,\nMUTE, QUIT...";
                 labelStyle.fontSize = 23;
                 var size = labelStyle.CalcSize(new GUIContent(bigText));
                 labelStyle.normal.textColor = new Color(1, 0, 0, step);
@@ -462,5 +471,14 @@ public class CameraMotion : MonoBehaviour
         var center = (minPos + maxPos) / 2;
         return Vector3.Lerp(center, origin, Easing.EaseIn(Mathf.Clamp01((sinceEnded - 2) / 3), EasingType.Cubic));
         //return center;
+    }
+
+    void OnDisconnectedFromServer(NetworkDisconnection info)
+    {
+        RestartToSplash();
+    }
+    void OnPlayerDisconnected(NetworkPlayer player)
+    {
+        RestartToSplash();
     }
 }
